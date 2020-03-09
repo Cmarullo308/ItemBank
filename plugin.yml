@@ -1,0 +1,11 @@
+main: me.ItemBank.main.ItemBank
+name: ItemBank
+author: CJM
+version: 0.0
+api-version: 1.15
+description: Item bank
+commands:
+   ItemBank:
+      usage: /<ItemBank> [command]
+      description: Main command
+      aliases: [ib]
