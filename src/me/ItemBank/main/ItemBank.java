@@ -5,9 +5,9 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class ItemBank extends JavaPlugin {
+	Bank bank;
 
 	CommandHandler commandHandler = new CommandHandler(this);
-	BankItemsData bankItemsData = new BankItemsData(this);
 
 	boolean debugMessagesEnabled = true;
 
@@ -26,10 +26,13 @@ public class ItemBank extends JavaPlugin {
 	public void onEnable() {
 		getConfig().options().copyDefaults(true);
 		saveConfig();
-		
-		bankItemsData.setup();
-		
+
+		bank = new Bank(this);
+		bank.setup();
+		bank.bankItemsData.setup();
+
 		this.getServer().getPluginManager().registerEvents(new EventListener(this), this);
+		this.getServer().getPluginManager().registerEvents(bank, this);
 
 		consoleMessage("ItemBank loaded");
 	}

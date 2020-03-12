@@ -1,8 +1,5 @@
 package me.ItemBank.main;
 
-import java.util.HashMap;
-import java.util.UUID;
-
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -40,28 +37,32 @@ public class CommandHandler {
 		sender.sendMessage("TestMethod");
 		Player player = (Player) sender;
 
-		if (args[1].equalsIgnoreCase("add")) {
-			Material itemType = player.getInventory().getItemInMainHand().getType();
+		plugin.bank.bankMenus.amountMenu.openMenuFor(player, Material.APPLE);
 
-			if (plugin.bankItemsData.bankItemData.get(itemType) == null) {
-				plugin.bankItemsData.bankItemData.put(itemType, new BankItem(itemType, plugin));
-				plugin.bankItemsData.bankItemData.get(itemType).accountAmounts.put(player.getUniqueId(),
-						player.getInventory().getItemInMainHand().getAmount());
-			} else {
-				plugin.bankItemsData.bankItemData.get(itemType).accountAmounts.put(player.getUniqueId(),
-						player.getInventory().getItemInMainHand().getAmount());
-			}
+		if (args.length > 1) {
+			if (args[1].equalsIgnoreCase("add")) {
+				Material itemType = player.getInventory().getItemInMainHand().getType();
 
-			plugin.bankItemsData.saveBankData();
-			// ---------------------------------------------------------------
-		} else if (args[1].equalsIgnoreCase("ga")) {
-			for (BankItem BI : plugin.bankItemsData.bankItemData.values()) {
-				plugin.consoleMessage(BI.material + " : " + BI.accountAmounts.toString());
+				if (plugin.bank.bankItemsData.bankItemData.get(itemType) == null) {
+					plugin.bank.bankItemsData.bankItemData.put(itemType, new BankItem(itemType, plugin));
+					plugin.bank.bankItemsData.bankItemData.get(itemType).accountAmounts.put(player.getUniqueId(),
+							player.getInventory().getItemInMainHand().getAmount());
+				} else {
+					plugin.bank.bankItemsData.bankItemData.get(itemType).accountAmounts.put(player.getUniqueId(),
+							player.getInventory().getItemInMainHand().getAmount());
+				}
+
+				plugin.bank.bankItemsData.saveBankData();
+				// ---------------------------------------------------------------
+			} else if (args[1].equalsIgnoreCase("ga")) {
+				for (BankItem BI : plugin.bank.bankItemsData.bankItemData.values()) {
+					plugin.consoleMessage(BI.material + " : " + BI.accountAmounts.toString());
+				}
+			} else if (args[1].equalsIgnoreCase("hm")) {
+				player.sendMessage(plugin.bank.bankItemsData.bankItemData
+						.get(player.getInventory().getItemInMainHand().getType()).accountAmounts
+								.get(player.getUniqueId()).toString());
 			}
-		} else if (args[1].equalsIgnoreCase("hm")) {
-			player.sendMessage(plugin.bankItemsData.bankItemData
-					.get(player.getInventory().getItemInMainHand().getType()).accountAmounts.get(player.getUniqueId())
-							.toString());
 		}
 
 	}

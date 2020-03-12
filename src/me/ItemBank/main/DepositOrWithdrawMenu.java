@@ -1,0 +1,72 @@
+package me.ItemBank.main;
+
+import java.util.ArrayList;
+
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+
+import net.md_5.bungee.api.ChatColor;
+
+public class DepositOrWithdrawMenu {
+	ItemBank plugin;
+
+	Inventory inventory;
+	String menuName;
+	ItemStack[] menuButtons;
+	ItemStack depositButtonIcon;
+	ItemStack withdrawButtonIcon;
+	ItemStack backButtonIcon;
+	ItemStack exitButtonIcon;
+	ItemStack backgroundIcon;
+
+	public DepositOrWithdrawMenu(ItemBank plugin, String menuName) {
+		this.plugin = plugin;
+		this.menuName = ChatColor.BLUE + menuName;
+	}
+
+	public void setup() {
+		BankMenus bankMenus = plugin.bank.bankMenus;
+		ArrayList<String> lore = new ArrayList<String>();
+
+		lore.add("Click to deposit items");
+		depositButtonIcon = bankMenus.makeButton(Material.HOPPER, ChatColor.GOLD + "Deposit", lore);
+
+		lore.set(0, "Click to withdraw items");
+		withdrawButtonIcon = bankMenus.makeButton(Material.HOPPER, ChatColor.GOLD + "Withdraw", lore);
+		backButtonIcon = bankMenus.makeButton(Material.RED_STAINED_GLASS_PANE, ChatColor.RED + "Back");
+		exitButtonIcon = bankMenus.makeButton(Material.BARRIER, ChatColor.RED + "Exit");
+		backgroundIcon = bankMenus.makeButton(Material.LIGHT_BLUE_STAINED_GLASS_PANE, " ");
+
+		menuButtons = new ItemStack[18];
+		for (int i = 0; i < 18; i++) {
+			switch (i) {
+			case 2:
+				menuButtons[i] = depositButtonIcon.clone();
+				break;
+			case 6:
+				menuButtons[i] = withdrawButtonIcon.clone();
+				break;
+			case 9:
+				menuButtons[i] = backButtonIcon.clone();
+				break;
+			case 13:
+				menuButtons[i] = exitButtonIcon.clone();
+				break;
+			default:
+				menuButtons[i] = backgroundIcon.clone();
+				break;
+			}
+		}
+
+	}
+
+	public void openMenuFor(Player player) {
+		inventory = Bukkit.createInventory(player, 18, menuName);
+		inventory.setContents(menuButtons);
+
+		player.openInventory(inventory);
+	}
+}

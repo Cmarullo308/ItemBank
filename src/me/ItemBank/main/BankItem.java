@@ -27,7 +27,7 @@ public class BankItem {
 			accountAmounts.put(account, amount);
 		}
 
-		plugin.bankItemsData.saveBankData();
+		plugin.bank.bankItemsData.saveBankData();
 	}
 
 	public String toString() {
