@@ -1,11 +1,11 @@
 package me.ItemBank.main;
 
+import java.util.UUID;
+
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-
 import net.md_5.bungee.api.ChatColor;
 
 public class CommandHandler {
@@ -22,6 +22,9 @@ public class CommandHandler {
 		}
 
 		switch (args[0].toLowerCase()) {
+		case "createbank":
+			createBank(sender, args);
+			break;
 		case "test":
 			testCommand(sender, args);
 			break;
@@ -33,11 +36,24 @@ public class CommandHandler {
 		return true;
 	}
 
+	private void createBank(CommandSender sender, String[] args) {
+		if (!(sender instanceof Player)) {
+			sender.sendMessage(mustBeAPlayerMessage());
+			return;
+		}
+
+		plugin.bank.createBank((Player) sender);
+	}
+
+	private String mustBeAPlayerMessage() {
+		return ChatColor.RED + "Must be a player to run this command";
+	}
+
 	private void testCommand(CommandSender sender, String[] args) {
 		sender.sendMessage("TestMethod");
 		Player player = (Player) sender;
 
-		plugin.bank.bankMenus.amountMenu.openMenuFor(player, Material.APPLE);
+		player.sendMessage(Material.APPLE.compareTo(Material.ACACIA_BOAT) + "");
 
 		if (args.length > 1) {
 			if (args[1].equalsIgnoreCase("add")) {

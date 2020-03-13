@@ -1,2 +1,7 @@
 Anvil search?
 itemButtons dont need to be declared at the top?
+permissions
+
+add number of pages on button
+
+updates howmany menu when someone else takes some out

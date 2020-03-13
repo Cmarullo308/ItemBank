@@ -7,8 +7,10 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import net.md_5.bungee.api.ChatColor;
+import net.minecraft.server.v1_15_R1.DataWatcher.Item;
 
 public class ListOfItemsMenu {
 	ItemBank plugin;
@@ -61,16 +63,59 @@ public class ListOfItemsMenu {
 		}
 	}
 
-	public void openMenuFor(Player player, ItemStack[] items) {
+	public void openMenuFor(Player player, int page) {
 		inventory = Bukkit.createInventory(player, 54, menuName);
-		for (int i = 0; i < 45; i++) {
-			if (items[i] != null) {
-				menuButtons[i] = items[i].clone();
+		int firstSlot = (page - 1) * 45;
+		int lastSlot = firstSlot + 44;
+
+		Session session = plugin.bank.sessions.get(player);
+		int amountOfItems = session.items.size();
+		int count = firstSlot;
+		int slotToSet = 0;
+
+
+		for (int i = firstSlot; i <= lastSlot; i++) {
+
+			if (count < amountOfItems && session.items.get(count) != null) {
+				ItemStack item = new ItemStack(session.items.get(i));
+				ItemMeta meta = item.getItemMeta();
+				meta.setDisplayName(capitalizeWord(item.getType().name().replace("_", " ").toLowerCase()) + " ("
+						+ session.amounts.get(i) + ")");
+				item.setItemMeta(meta);
+
+				menuButtons[slotToSet] = item;
+			} else {
+				menuButtons[slotToSet] = null;
 			}
+
+			slotToSet++;
+			count++;
+		}
+
+		if (page == 1) {
+			menuButtons[47] = backgroundIcon.clone();
+			menuButtons[51] = nextPageButtonIcon.clone();
+		} else {
+			menuButtons[47] = previousPageButtonIcon.clone();
+		}
+
+		if (lastSlot >= session.items.size()) {
+			menuButtons[51] = backgroundIcon.clone();
 		}
 
 		inventory.setContents(menuButtons);
 
 		player.openInventory(inventory);
+	}
+
+	public static String capitalizeWord(String str) {
+		String words[] = str.split("\\s");
+		String capitalizeWord = "";
+		for (String w : words) {
+			String first = w.substring(0, 1);
+			String afterfirst = w.substring(1);
+			capitalizeWord += first.toUpperCase() + afterfirst + " ";
+		}
+		return capitalizeWord.trim();
 	}
 }

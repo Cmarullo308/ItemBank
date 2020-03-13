@@ -1,7 +1,7 @@
 package me.ItemBank.main;
 
-import java.util.HashMap;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.bukkit.Material;
 
@@ -9,7 +9,7 @@ public class BankItem {
 	ItemBank plugin;
 
 	Material material;
-	HashMap<UUID, Integer> accountAmounts = new HashMap<UUID, Integer>();
+	ConcurrentHashMap<UUID, Integer> accountAmounts = new ConcurrentHashMap<UUID, Integer>();
 
 	public BankItem(Material material, ItemBank plugin) {
 		this.plugin = plugin;

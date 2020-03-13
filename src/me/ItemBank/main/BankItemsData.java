@@ -3,9 +3,11 @@ package me.ItemBank.main;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -16,7 +18,7 @@ import net.md_5.bungee.api.ChatColor;
 public class BankItemsData {
 	ItemBank plugin;
 
-	HashMap<Material, BankItem> bankItemData = new HashMap<Material, BankItem>();
+	ConcurrentHashMap<Material, BankItem> bankItemData = new ConcurrentHashMap<Material, BankItem>();
 
 	public FileConfiguration bankFileConfig;
 	public File bankFile;
@@ -73,7 +75,7 @@ public class BankItemsData {
 				plugin.consoleMessage("\n");
 			}
 		}
-
+		
 		saveBankData();
 	}
 
