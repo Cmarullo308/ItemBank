@@ -24,7 +24,7 @@ public class BankMenus {
 		depositMenu = new DepositMenu(plugin, "Deposit Menu");
 		withdrawMenu = new WithdrawMenu(plugin, "Withdraw");
 		listOfItemsMenu = new ListOfItemsMenu(plugin, "List of Items");
-		amountMenu = new AmountMenu(plugin, "AmountMenu");
+		amountMenu = new AmountMenu(plugin, "Amount Menu");
 	}
 
 	public void setupMenus() {

@@ -13,9 +13,11 @@ public class Session {
 	private int pageNum;
 	ArrayList<Material> items;
 	ArrayList<Integer> amounts;
+	int numOfPages;
 	// Choose amount page
 	private int maxAmount;
 	private int amountSelected;
+	private Material materialSelected;
 
 	public Session(Player player) {
 		this.player = player;
@@ -50,7 +52,21 @@ public class Session {
 	}
 
 	public void setAmountSelected(int amountSelected) {
-		this.amountSelected = amountSelected;
+		if (amountSelected > maxAmount) {
+			this.amountSelected = maxAmount;
+		} else if (amountSelected < 0) {
+			this.amountSelected = 0;
+		} else {
+			this.amountSelected = amountSelected;
+		}
+	}
+
+	public Material getMaterialSelected() {
+		return materialSelected;
+	}
+
+	public void setMaterialSelected(Material materialSelected) {
+		this.materialSelected = materialSelected;
 	}
 
 	enum ACCOUNT {

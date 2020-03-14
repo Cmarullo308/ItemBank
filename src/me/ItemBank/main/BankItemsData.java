@@ -47,7 +47,13 @@ public class BankItemsData {
 	}
 
 	private void loadBankData() {
-		Set<String> materialNames = bankFileConfig.getConfigurationSection("Items").getKeys(false);
+		Set<String> materialNames;
+		try {
+			materialNames = bankFileConfig.getConfigurationSection("Items").getKeys(false);
+		} catch (java.lang.NullPointerException e) {
+			saveBankData();
+			return;
+		}
 
 		// For each item
 		for (String materialName : materialNames) {
@@ -62,7 +68,7 @@ public class BankItemsData {
 			if (UUIDs != null) {
 				// For ever ID that has this item
 				for (String idString : UUIDs) {
-					plugin.consoleMessage(materialName + " : " + idString);
+//					plugin.consoleMessage(materialName + " : " + idString);
 					UUID id = UUID.fromString(idString);
 					Material material = Material.valueOf(materialName);
 					Integer amount = Integer
@@ -72,10 +78,10 @@ public class BankItemsData {
 					}
 					bankItemData.get(material).deposit(id, amount);
 				}
-				plugin.consoleMessage("\n");
+//				plugin.consoleMessage("\n");
 			}
 		}
-		
+
 		saveBankData();
 	}
 

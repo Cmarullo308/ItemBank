@@ -18,6 +18,8 @@ public class DepositMenu {
 	ItemStack[] menuButtons;
 	ItemStack backButtonIcon;
 	ItemStack exitButtonIcon;
+	ItemStack moveAllItemsUpButtonIcon;
+	ItemStack moveAllItemsDownButtonIcon;
 	ItemStack depositButtonIcon;
 	ItemStack backgroundIcon;
 
@@ -33,6 +35,10 @@ public class DepositMenu {
 		lore.add(ChatColor.BLUE + "~ItemBank~");
 		backButtonIcon = bankMenus.makeButton(Material.RED_STAINED_GLASS_PANE, ChatColor.RED + "Back", lore);
 		exitButtonIcon = bankMenus.makeButton(Material.BARRIER, ChatColor.RED + "Exit", lore);
+		moveAllItemsUpButtonIcon = bankMenus.makeButton(Material.PURPLE_STAINED_GLASS_PANE,
+				ChatColor.DARK_PURPLE + "Move all items up");
+		moveAllItemsDownButtonIcon = bankMenus.makeButton(Material.PURPLE_STAINED_GLASS_PANE,
+				ChatColor.DARK_PURPLE + "Move all items down");
 		depositButtonIcon = bankMenus.makeButton(Material.LIME_STAINED_GLASS_PANE, ChatColor.GOLD + "Deposit Items",
 				lore);
 		backgroundIcon = bankMenus.makeButton(Material.LIGHT_BLUE_STAINED_GLASS_PANE, " ", lore);
@@ -43,11 +49,15 @@ public class DepositMenu {
 			case 45:
 				menuButtons[slotNum] = backButtonIcon.clone();
 				break;
-			case 46:
 			case 47:
+				menuButtons[slotNum] = moveAllItemsDownButtonIcon.clone();
+				break;
+			case 51:
+				menuButtons[slotNum] = moveAllItemsUpButtonIcon.clone();
+				break;
+			case 46:
 			case 48:
 			case 50:
-			case 51:
 			case 52:
 				menuButtons[slotNum] = backgroundIcon.clone();
 				break;

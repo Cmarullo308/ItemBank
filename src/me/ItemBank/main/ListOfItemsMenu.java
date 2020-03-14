@@ -73,7 +73,6 @@ public class ListOfItemsMenu {
 		int count = firstSlot;
 		int slotToSet = 0;
 
-
 		for (int i = firstSlot; i <= lastSlot; i++) {
 
 			if (count < amountOfItems && session.items.get(count) != null) {
@@ -95,8 +94,11 @@ public class ListOfItemsMenu {
 		if (page == 1) {
 			menuButtons[47] = backgroundIcon.clone();
 			menuButtons[51] = nextPageButtonIcon.clone();
+		} else if (page == session.numOfPages) {
+			menuButtons[47] = previousPageButtonIcon.clone();
 		} else {
 			menuButtons[47] = previousPageButtonIcon.clone();
+			menuButtons[51] = nextPageButtonIcon.clone();
 		}
 
 		if (lastSlot >= session.items.size()) {

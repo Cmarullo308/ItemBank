@@ -4,4 +4,8 @@ permissions
 
 add number of pages on button
 
+Take all from player inv in deposit menu
+
+save items in config as binary?
+
 updates howmany menu when someone else takes some out

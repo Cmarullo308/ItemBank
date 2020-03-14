@@ -1,11 +1,15 @@
 package me.ItemBank.main;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+
 import net.md_5.bungee.api.ChatColor;
 
 public class CommandHandler {
@@ -53,7 +57,15 @@ public class CommandHandler {
 		sender.sendMessage("TestMethod");
 		Player player = (Player) sender;
 
-		player.sendMessage(Material.APPLE.compareTo(Material.ACACIA_BOAT) + "");
+		ItemStack item = new ItemStack(Material.DIAMOND);
+		ItemMeta meta = item.getItemMeta();
+		ArrayList<String> lore = new ArrayList<String>();
+		lore.add("Shit");
+		lore.add("Fuck");
+		meta.setLore(lore);
+		item.setItemMeta(meta);
+
+		player.getInventory().addItem(item);
 
 		if (args.length > 1) {
 			if (args[1].equalsIgnoreCase("add")) {

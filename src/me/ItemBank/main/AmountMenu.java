@@ -1,14 +1,20 @@
 package me.ItemBank.main;
 
 import java.util.ArrayList;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
+import com.sun.xml.internal.ws.api.addressing.WSEndpointReference.Metadata;
+
+import me.ItemBank.main.Session.ACCOUNT;
 import net.md_5.bungee.api.ChatColor;
+import net.minecraft.server.v1_15_R1.AdvancementRewards.b;
 
 public class AmountMenu {
 	ItemBank plugin;
@@ -28,7 +34,7 @@ public class AmountMenu {
 
 	public AmountMenu(ItemBank plugin, String menuName) {
 		this.plugin = plugin;
-		this.menuName = menuName;
+		this.menuName = ChatColor.BLUE + menuName;
 	}
 
 	public void setup() {
@@ -72,7 +78,7 @@ public class AmountMenu {
 			case 22:
 				menuButtons[slotNum] = exitButtonIcon.clone();
 				break;
-			case 35:
+			case 26:
 				menuButtons[slotNum] = withdrawButtonIcon.clone();
 				break;
 			default:
@@ -83,11 +89,75 @@ public class AmountMenu {
 	}
 
 	public void openMenuFor(Player player, Material material) {
+		ConcurrentHashMap<Material, BankItem> bankItemData = plugin.bank.bankItemsData.bankItemData;
+
 		inventory = Bukkit.createInventory(player, 27, menuName);
 		menuButtons[4] = new ItemStack(material);
+
+		Session session = plugin.bank.sessions.get(player);
+		if (session.getAccount() == ACCOUNT.GLOBAL) {
+			session.setMaxAmount(bankItemData.get(material).accountAmounts.get(plugin.bank.globalUUID));
+		} else {
+			session.setMaxAmount(bankItemData.get(material).accountAmounts.get(player.getUniqueId()));
+		}
+
+		ItemMeta meta;
+
+		// Minus 10
+		menuButtons[11] = new ItemStack(Material.GLOWSTONE_DUST);
+		meta = menuButtons[11].getItemMeta();
+		meta.setDisplayName(ChatColor.RED + "-10 " + ChatColor.WHITE + "(" + session.getAmountSelected() + " / "
+				+ session.getMaxAmount() + ")");
+		menuButtons[11].setItemMeta(meta);
+
+		// Minus 1
+		menuButtons[12] = new ItemStack(Material.GLOWSTONE_DUST);
+		meta = menuButtons[12].getItemMeta();
+		meta.setDisplayName(ChatColor.RED + "-1 " + ChatColor.WHITE + "(" + session.getAmountSelected() + " / "
+				+ session.getMaxAmount() + ")");
+		menuButtons[12].setItemMeta(meta);
+
+		// Reset to 0
+		menuButtons[13] = new ItemStack(Material.WHITE_STAINED_GLASS_PANE);
+		meta = menuButtons[13].getItemMeta();
+		meta.setDisplayName(ChatColor.YELLOW + "Reset to 0 " + ChatColor.WHITE + "(" + session.getAmountSelected()
+				+ " / " + session.getMaxAmount() + ")");
+		menuButtons[13].setItemMeta(meta);
+
+		// Add 1
+		menuButtons[14] = new ItemStack(Material.REDSTONE);
+		meta = menuButtons[14].getItemMeta();
+		meta.setDisplayName(ChatColor.GREEN + "+1 " + ChatColor.WHITE + "(" + session.getAmountSelected() + " / "
+				+ session.getMaxAmount() + ")");
+		menuButtons[14].setItemMeta(meta);
+
+		// Add 1
+		menuButtons[15] = new ItemStack(Material.REDSTONE);
+		meta = menuButtons[15].getItemMeta();
+		meta.setDisplayName(ChatColor.GREEN + "+10 " + ChatColor.WHITE + "(" + session.getAmountSelected() + " / "
+				+ session.getMaxAmount() + ")");
+		menuButtons[15].setItemMeta(meta);
+
+		menuButtons[26] = new ItemStack(Material.LIME_STAINED_GLASS_PANE);
+		meta = menuButtons[26].getItemMeta();
+		meta.setDisplayName(
+				ChatColor.GREEN + "Withdraw " + ChatColor.GOLD + session.getAmountSelected() + " " + ChatColor.GREEN
+						+ capitalizeWord(session.getMaterialSelected().name().replace("_", " ").toLowerCase()));
+		menuButtons[26].setItemMeta(meta);
 
 		inventory.setContents(menuButtons);
 
 		player.openInventory(inventory);
+	}
+
+	public static String capitalizeWord(String str) {
+		String words[] = str.split("\\s");
+		String capitalizeWord = "";
+		for (String w : words) {
+			String first = w.substring(0, 1);
+			String afterfirst = w.substring(1);
+			capitalizeWord += first.toUpperCase() + afterfirst + " ";
+		}
+		return capitalizeWord.trim();
 	}
 }

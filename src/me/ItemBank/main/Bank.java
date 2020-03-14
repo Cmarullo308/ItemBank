@@ -2,24 +2,32 @@ package me.ItemBank.main;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.bukkit.Material;
+import org.bukkit.block.Banner;
 import org.bukkit.block.Block;
+import org.bukkit.block.ShulkerBox;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.BannerMeta;
+import org.bukkit.inventory.meta.BlockStateMeta;
+import org.bukkit.inventory.meta.Damageable;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import me.ItemBank.main.Session.ACCOUNT;
 import net.md_5.bungee.api.ChatColor;
+import net.minecraft.server.v1_15_R1.Items;
 
 public class Bank implements Listener {
 	ItemBank plugin;
@@ -90,6 +98,31 @@ public class Bank implements Listener {
 	}
 
 	@EventHandler
+	public void onInventoryCloseEvent(InventoryCloseEvent event) {
+		Player player = (Player) event.getPlayer();
+
+		String inventoryName = event.getView().getTitle();
+		if (inventoryName.substring(2).equals("Deposit Menu")) {
+
+			ItemStack[] items = event.getInventory().getContents();
+			for (int itemSlot = 0; itemSlot <= 44; itemSlot++) {
+				if (items[itemSlot] != null) {
+					givePlayerBackDepositItems(player, items[itemSlot]);
+				}
+			}
+		}
+
+	}
+
+	private void givePlayerBackDepositItems(Player player, ItemStack itemStack) {
+		plugin.consoleMessage(itemStack.toString() + "\n");
+		HashMap<Integer, ItemStack> excessItems = player.getInventory().addItem(itemStack);
+		for (Map.Entry<Integer, ItemStack> ex : excessItems.entrySet()) {
+			player.getWorld().dropItem(player.getLocation(), ex.getValue());
+		}
+	}
+
+	@EventHandler
 	public void onInventoryClickEvent(InventoryClickEvent event) {
 		String inventoryName = event.getView().getTitle();
 		Player player = (Player) event.getWhoClicked();
@@ -120,11 +153,85 @@ public class Bank implements Listener {
 				event.setCancelled(true);
 				listOfItemsMenuButtonClicked(event, player);
 			}
-		} else if (inventoryName.equals(bankMenus.amountMenu.menuName)) {
+		} else if (isAmountMenu(inventoryName)) {
 			if (event.getRawSlot() < 27) {
 				event.setCancelled(true);
+				amountMenuClicked(event, player);
 			}
 		}
+	}
+
+	private void amountMenuClicked(InventoryClickEvent event, Player player) {
+		int slotClicked = event.getRawSlot();
+		Session session = sessions.get(player);
+
+		switch (slotClicked) {
+		case 11:
+			session.setAmountSelected(session.getAmountSelected() - 10);
+			bankMenus.amountMenu.openMenuFor(player, session.getMaterialSelected());
+			break;
+		case 12:
+			session.setAmountSelected(session.getAmountSelected() - 1);
+			bankMenus.amountMenu.openMenuFor(player, session.getMaterialSelected());
+			break;
+		case 13:
+			session.setAmountSelected(0);
+			bankMenus.amountMenu.openMenuFor(player, session.getMaterialSelected());
+			break;
+		case 14:
+			session.setAmountSelected(session.getAmountSelected() + 1);
+			bankMenus.amountMenu.openMenuFor(player, session.getMaterialSelected());
+			break;
+		case 15:
+			session.setAmountSelected(session.getAmountSelected() + 10);
+			bankMenus.amountMenu.openMenuFor(player, session.getMaterialSelected());
+			break;
+		case 18:
+			bankMenus.listOfItemsMenu.openMenuFor(player, sessions.get(player).getPageNum());
+			break;
+		case 22:
+			player.closeInventory();
+			break;
+		case 26:
+			withdrawItemsToPlayer(player);
+			session.setAmountSelected(0);
+			bankMenus.amountMenu.openMenuFor(player, session.getMaterialSelected());
+			break;
+		default:
+			break;
+		}
+	}
+
+	private void withdrawItemsToPlayer(Player player) {
+		Session session = sessions.get(player);
+		ACCOUNT account = session.getAccount();
+		Material itemType = session.getMaterialSelected();
+		int amountSelect = session.getAmountSelected();
+
+		BankItem item = bankItemsData.bankItemData.get(itemType);
+
+		// ----give to player
+		HashMap<Integer, ItemStack> excessItems = player.getInventory().addItem(new ItemStack(itemType, amountSelect));
+		for (Map.Entry<Integer, ItemStack> ex : excessItems.entrySet()) {
+			player.getWorld().dropItem(player.getLocation(), ex.getValue());
+		}
+
+		// Remove from bank
+		if (account == ACCOUNT.GLOBAL) {
+			item.accountAmounts.put(globalUUID, item.accountAmounts.get(globalUUID) - amountSelect);
+		} else if (account == ACCOUNT.PRIVATE) {
+			item.accountAmounts.put(player.getUniqueId(), item.accountAmounts.get(player.getUniqueId()) - amountSelect);
+		}
+
+		bankItemsData.saveBankData();
+	}
+
+	private boolean isAmountMenu(String inventoryName) {
+		if (inventoryName.length() < 13) {
+			return false;
+		}
+
+		return inventoryName.substring(2, 13).equals("Amount Menu");
 	}
 
 	private boolean isListOfItemsMenu(String inventoryName) {
@@ -150,11 +257,20 @@ public class Bank implements Listener {
 				session.setPageNum(pageNum);
 				bankMenus.listOfItemsMenu.openMenuFor(player, pageNum);
 			}
+		} else if (slotClicked == 45) {
+			bankMenus.withdrawMenu.openMenuFor(player);
+		} else if (slotClicked == 49) {
+			player.closeInventory();
 		} else if (slotClicked == 47) {
 			if (event.getInventory().getContents()[slotClicked].getType() == Material.LIME_STAINED_GLASS_PANE) {
 				pageNum = session.getPageNum() - 1;
 				session.setPageNum(pageNum);
 				bankMenus.listOfItemsMenu.openMenuFor(player, pageNum);
+			}
+		} else if (slotClicked >= 0 && slotClicked <= 44) {
+			if (event.getInventory().getContents()[slotClicked] != null) {
+				session.setMaterialSelected(event.getInventory().getContents()[slotClicked].getType());
+				bankMenus.amountMenu.openMenuFor(player, event.getInventory().getContents()[slotClicked].getType());
 			}
 		}
 	}
@@ -162,45 +278,74 @@ public class Bank implements Listener {
 	private void withdrawButtonClicked(InventoryClickEvent event, Player player) {
 		int slotClicked = event.getRawSlot();
 
-		if (slotClicked == 9) {
-			openListOfItemsMenu(player, "all");
+		if (slotClicked >= 9 && slotClicked <= 35) {
+			openListOfItemsMenu(player, event.getInventory().getContents()[slotClicked].getItemMeta().getDisplayName());
+		} else if (slotClicked == 36) {
+			bankMenus.depositOrWithdrawMenu.openMenuFor(player);
+		} else if (slotClicked == 40) {
+			player.closeInventory();
 		}
 	}
 
 	private void openListOfItemsMenu(Player player, String letter) {
 
 		// All lettered items
-		if (letter.equalsIgnoreCase("all")) {
-			ArrayList<Material> items = new ArrayList<Material>();
-			// Get all materials in bank
-			for (Material material : bankItemsData.bankItemData.keySet()) {
-				items.add(material);
-			}
+		ArrayList<Material> items = new ArrayList<Material>();
+		// Get all materials in bank
+		for (Material material : bankItemsData.bankItemData.keySet()) {
+			items.add(material);
+		}
 
-			// Alphabetize items
-			Collections.sort(items);
+		// Alphabetize items
+		Collections.sort(items);
 
-			// Extract all items that belong to player
-			Session session = sessions.get(player);
-			session.items = new ArrayList<Material>();
-			session.amounts = new ArrayList<Integer>();
-			for (Material material : items) {
-				if (session.getAccount() == ACCOUNT.GLOBAL) {
-					if (globalAccountHasItem(material)) {
+		// Extract all items that belong to player
+		Session session = sessions.get(player);
+		session.items = new ArrayList<Material>();
+		session.amounts = new ArrayList<Integer>();
+
+		letter = letter.substring(2);
+		boolean specificLetter;
+		if (letter.equalsIgnoreCase("All Items")) {
+			specificLetter = false;
+		} else {
+			specificLetter = true;
+		}
+
+		UUID uuid;
+
+		if (session.getAccount() == ACCOUNT.GLOBAL) {
+			uuid = plugin.bank.globalUUID;
+		} else {
+			uuid = player.getUniqueId();
+		}
+
+		for (Material material : items) {
+			if (accountHasItem(material, uuid)) {
+				if (!specificLetter) {
+					session.items.add(material);
+					session.amounts.add(bankItemsData.bankItemData.get(material).accountAmounts.get(uuid));
+				} else {
+					if (material.name().startsWith(letter)) {
 						session.items.add(material);
-						session.amounts.add(bankItemsData.bankItemData.get(material).accountAmounts.get(globalUUID));
+						session.amounts.add(bankItemsData.bankItemData.get(material).accountAmounts.get(uuid));
 					}
 				}
 			}
-
-			session.setPageNum(1);
-			bankMenus.listOfItemsMenu.openMenuFor(player, 1);
 		}
+
+		session.numOfPages = session.items.size() / 45;
+		if (session.items.size() % 45 != 0) {
+			session.numOfPages++;
+		}
+
+		session.setPageNum(1);
+		bankMenus.listOfItemsMenu.openMenuFor(player, 1);
 		// ----
 	}
 
-	private boolean globalAccountHasItem(Material material) {
-		if (bankItemsData.bankItemData.get(material).accountAmounts.get(globalUUID) != null) {
+	private boolean accountHasItem(Material material, UUID accountId) {
+		if (bankItemsData.bankItemData.get(material).accountAmounts.get(accountId) != null) {
 			return true;
 		}
 		return false;
@@ -213,19 +358,87 @@ public class Bank implements Listener {
 		case 45:
 			bankMenus.depositOrWithdrawMenu.openMenuFor(player);
 			break;
+		case 47:
+			moveAllItemsDown(event, player);
+			break;
 		case 49:
 			player.closeInventory();
 			break;
+		case 51:
+			moveAllItemsUp(event, player);
+			break;
 		case 53:
-			depositToGlobalAccount(event, player, sessions.get(player).getAccount());
+			depositToAccount(event, player, sessions.get(player).getAccount());
 			break;
 		default:
 			break;
 		}
 	}
 
-	private void depositToGlobalAccount(InventoryClickEvent event, Player player, ACCOUNT account) {
+	private void moveAllItemsDown(InventoryClickEvent event, Player player) {
+		ItemStack[] topContents = event.getInventory().getContents();
+		ItemStack[] playerContents = player.getInventory().getContents();
+
+		boolean movedItem = false;
+
+		// For each slot in top menu
+		for (int topSlot = 0; topSlot < 45; topSlot++) {
+			movedItem = false;
+			if (topContents[topSlot] != null) {
+				// Search player inv for empty slot big section
+				for (int bottomSlot = 9; bottomSlot < 36; bottomSlot++) {
+					if (playerContents[bottomSlot] == null) {
+						playerContents[bottomSlot] = topContents[topSlot].clone();
+						topContents[topSlot] = null;
+						movedItem = true;
+						break;
+					}
+				}
+				if (movedItem) {
+					continue;
+				}
+
+				// if big sectio empty
+				for (int bottomSlot = 0; bottomSlot < 9; bottomSlot++) {
+					if (playerContents[bottomSlot] == null) {
+						playerContents[bottomSlot] = topContents[topSlot].clone();
+						topContents[topSlot] = null;
+						movedItem = true;
+						break;
+					}
+				}
+			}
+		}
+
+		player.getInventory().setContents(playerContents);
+		event.getInventory().setContents(topContents);
+	}
+
+	private void moveAllItemsUp(InventoryClickEvent event, Player player) {
+		ItemStack[] topContents = event.getInventory().getContents();
+		ItemStack[] playerContents = player.getInventory().getContents();
+
+		// For ever slot in player inv
+		for (int bottomSlot = 9; bottomSlot < 36; bottomSlot++) {
+			if (playerContents[bottomSlot] != null) {
+				// Search top inventory for empty slot
+				for (int topSlot = 0; topSlot < 45; topSlot++) {
+					if (topContents[topSlot] == null) {
+						topContents[topSlot] = playerContents[bottomSlot].clone();
+						playerContents[bottomSlot] = null;
+						break;
+					}
+				}
+			}
+		}
+
+		event.getInventory().setContents(topContents);
+		player.getInventory().setContents(playerContents);
+	}
+
+	private void depositToAccount(InventoryClickEvent event, Player player, ACCOUNT account) {
 		ItemStack[] items = event.getInventory().getContents();
+
 		for (int itemNum = 0; itemNum < 45; itemNum++) {
 			if (isValidItem(items[itemNum])) {
 				if (account == ACCOUNT.GLOBAL) {
@@ -264,9 +477,85 @@ public class Bank implements Listener {
 			return false;
 		}
 
+		if (itemStack.getItemMeta().getLore() != null) {
+			return false;
+		}
+
+		if (itemStack.getItemMeta().hasDisplayName()) {
+			return false;
+		}
+
+		switch (itemStack.getType()) {
+		case POTION:
+		case SPLASH_POTION:
+		case LINGERING_POTION:
+		case ENCHANTED_BOOK:
+		case TIPPED_ARROW:
+		case PLAYER_HEAD:
+			return false;
+		default:
+			break;
+		}
+
+		// If item is damaged
+		if (((Damageable) itemStack.getItemMeta()).getDamage() != 0) {
+			return false;
+		}
+
+		if (isShulkerBoxWithItems(itemStack)) {
+			return false;
+		}
+
+		if (itemStack.getEnchantments().isEmpty() == false) {
+			return false;
+		}
+
+		if (isBannerWithPattern(itemStack)) {
+			return false;
+		}
+
+		// Item is valid
 		return true;
 	}
 
+	private boolean isBannerWithPattern(ItemStack itemStack) {
+		if (itemStack.getType().toString().endsWith("BANNER")) {
+			BannerMeta meta = (BannerMeta) itemStack.getItemMeta();
+			if (meta.numberOfPatterns() != 0) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Checks if the itemstack is a shulker box AND has items in it
+	 * 
+	 * @param itemStack
+	 * @return true if itemStack is a shulker box with items in it, false otherwise
+	 */
+	private boolean isShulkerBoxWithItems(ItemStack itemStack) {
+		if (itemStack.getItemMeta() instanceof BlockStateMeta) {
+			BlockStateMeta itemMeta = (BlockStateMeta) itemStack.getItemMeta();
+			if (itemMeta.getBlockState() instanceof ShulkerBox) {
+				ShulkerBox shulkerBox = (ShulkerBox) itemMeta.getBlockState();
+				for (ItemStack item : shulkerBox.getInventory().getContents()) {
+					if (item != null) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Determines which button was clicked in the "Deposit or Withdraw" menu
+	 * 
+	 * @param event
+	 * @param player
+	 */
 	private void depositOrWithdrawMenuClicked(InventoryClickEvent event, Player player) {
 		int slotClicked = event.getRawSlot();
 
