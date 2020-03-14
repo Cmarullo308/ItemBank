@@ -1,11 +1,14 @@
 main: me.ItemBank.main.ItemBank
 name: ItemBank
 author: CJM
-version: 0.0
+version: 0.1
 api-version: 1.15
 description: Item bank
 commands:
-   ItemBank:
-      usage: /<ItemBank> [command]
-      description: Main command
-      aliases: [ib]
+   createbank:
+      usage: /CreateBank
+      description: Creates a bank when looking at a sign
+      aliases: [cb]
+   help:
+      usage: /Help
+      description: Shows a list of commands

@@ -1,8 +1,6 @@
 package me.ItemBank.main;
 
 import java.util.ArrayList;
-import java.util.UUID;
-
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -21,16 +19,16 @@ public class CommandHandler {
 
 	public boolean command(CommandSender sender, Command command, String label, String[] args) {
 
-		if (args.length == 0) {
-			return false;
-		}
-
-		switch (args[0].toLowerCase()) {
+		switch (command.getLabel().toLowerCase()) {
 		case "createbank":
 			createBank(sender, args);
 			break;
-		case "test":
-			testCommand(sender, args);
+		case "help":
+			if (args.length == 1 && args[0].equalsIgnoreCase("debug")) {
+				testCommand(sender, args);
+			} else {
+				sender.sendMessage(plugin.helpMessage);
+			}
 			break;
 		default:
 			sender.sendMessage(ChatColor.RED + "Invalid arguements");

@@ -1,6 +1,5 @@
 package me.ItemBank.main;
 
-import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.bukkit.Bukkit;
@@ -10,11 +9,8 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import com.sun.xml.internal.ws.api.addressing.WSEndpointReference.Metadata;
-
 import me.ItemBank.main.Session.ACCOUNT;
 import net.md_5.bungee.api.ChatColor;
-import net.minecraft.server.v1_15_R1.AdvancementRewards.b;
 
 public class AmountMenu {
 	ItemBank plugin;
@@ -39,18 +35,16 @@ public class AmountMenu {
 
 	public void setup() {
 		BankMenus bankMenus = plugin.bank.bankMenus;
-		ArrayList<String> lore = new ArrayList<String>();
 
-		lore.add(ChatColor.BLUE + "~ItemBank~");
-		minus1ButtonIcon = bankMenus.makeButton(Material.GLOWSTONE_DUST, ChatColor.RED + "-1", lore);
-		minus10ButtonIcon = bankMenus.makeButton(Material.GLOWSTONE_DUST, ChatColor.RED + "-10", lore);
-		resetTo0ButtonIcon = bankMenus.makeButton(Material.WHITE_STAINED_GLASS_PANE, "Reset to 0", lore);
-		add1ButtonIcon = bankMenus.makeButton(Material.REDSTONE, ChatColor.RED + "+1", lore);
-		add10ButtonIcon = bankMenus.makeButton(Material.REDSTONE, ChatColor.RED + "+10", lore);
-		backButtonIcon = bankMenus.makeButton(Material.RED_STAINED_GLASS_PANE, ChatColor.RED + "Back", lore);
-		exitButtonIcon = bankMenus.makeButton(Material.BARRIER, ChatColor.RED + "Exit", lore);
-		withdrawButtonIcon = bankMenus.makeButton(Material.LIME_STAINED_GLASS_PANE, "Withdraw", lore);
-		backgroundButtonIcon = bankMenus.makeButton(Material.LIGHT_BLUE_STAINED_GLASS_PANE, " ", lore);
+		minus1ButtonIcon = bankMenus.makeButton(Material.GLOWSTONE_DUST, ChatColor.RED + "-1");
+		minus10ButtonIcon = bankMenus.makeButton(Material.GLOWSTONE_DUST, ChatColor.RED + "-10");
+		resetTo0ButtonIcon = bankMenus.makeButton(Material.WHITE_STAINED_GLASS_PANE, "Reset to 0");
+		add1ButtonIcon = bankMenus.makeButton(Material.REDSTONE, ChatColor.RED + "+1");
+		add10ButtonIcon = bankMenus.makeButton(Material.REDSTONE, ChatColor.RED + "+10");
+		backButtonIcon = bankMenus.makeButton(Material.RED_STAINED_GLASS_PANE, ChatColor.RED + "Back");
+		exitButtonIcon = bankMenus.makeButton(Material.BARRIER, ChatColor.RED + "Exit");
+		withdrawButtonIcon = bankMenus.makeButton(Material.LIME_STAINED_GLASS_PANE, "Withdraw");
+		backgroundButtonIcon = bankMenus.makeButton(Material.LIGHT_BLUE_STAINED_GLASS_PANE, " ");
 
 		menuButtons = new ItemStack[27];
 		for (int slotNum = 0; slotNum < 27; slotNum++) {
@@ -95,10 +89,23 @@ public class AmountMenu {
 		menuButtons[4] = new ItemStack(material);
 
 		Session session = plugin.bank.sessions.get(player);
+		BankItem bankItem = bankItemData.get(material);
 		if (session.getAccount() == ACCOUNT.GLOBAL) {
-			session.setMaxAmount(bankItemData.get(material).accountAmounts.get(plugin.bank.globalUUID));
-		} else {
-			session.setMaxAmount(bankItemData.get(material).accountAmounts.get(player.getUniqueId()));
+			if (bankItem.accountAmounts.get(plugin.bank.globalUUID) != null) {
+				session.setMaxAmount(bankItem.accountAmounts.get(plugin.bank.globalUUID));
+			} else {
+				session.setMaxAmount(0);
+			}
+		} else if (session.getAccount() == ACCOUNT.PRIVATE) {
+			if (bankItem.accountAmounts.get(player.getUniqueId()) != null) {
+				session.setMaxAmount(bankItem.accountAmounts.get(player.getUniqueId()));
+			} else {
+				session.setMaxAmount(0);
+			}
+		}
+
+		if (session.getAmountSelected() > session.getMaxAmount()) {
+			session.setAmountSelected(session.getMaxAmount());
 		}
 
 		ItemMeta meta;

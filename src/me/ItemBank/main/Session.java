@@ -1,13 +1,13 @@
 package me.ItemBank.main;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
+import me.ItemBank.main.BankMenus.BANKMENU;
 
 public class Session {
-	private Player player;
+	private BANKMENU currentMenu;
+
+//	private Player player;
 	private ACCOUNT account;
 	// ListOfItems page (Withdraw
 	private int pageNum;
@@ -19,8 +19,8 @@ public class Session {
 	private int amountSelected;
 	private Material materialSelected;
 
-	public Session(Player player) {
-		this.player = player;
+	public Session() {
+		
 	}
 
 	public ACCOUNT getAccount() {
@@ -68,6 +68,16 @@ public class Session {
 	public void setMaterialSelected(Material materialSelected) {
 		this.materialSelected = materialSelected;
 	}
+
+	public BANKMENU getCurrentMenu() {
+		return currentMenu;
+	}
+
+	public void setCurrentMenu(BANKMENU currentMenu) {
+		this.currentMenu = currentMenu;
+	}
+
+
 
 	enum ACCOUNT {
 		GLOBAL, PRIVATE

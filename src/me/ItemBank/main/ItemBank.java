@@ -7,6 +7,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class ItemBank extends JavaPlugin {
 	Bank bank;
 
+	String helpMessage;
+
 	CommandHandler commandHandler = new CommandHandler(this);
 
 	boolean debugMessagesEnabled = true;
@@ -31,10 +33,20 @@ public class ItemBank extends JavaPlugin {
 		bank.setup();
 		bank.bankItemsData.setup();
 
-		this.getServer().getPluginManager().registerEvents(new EventListener(this), this);
 		this.getServer().getPluginManager().registerEvents(bank, this);
 
+		helpMessage = createHelpMessage();
+
 		consoleMessage("ItemBank loaded");
+	}
+
+	private String createHelpMessage() {
+		String message = "";
+
+		message += "Commands:\n";
+		message += "/CreateBank     (While looking at a sign)";
+
+		return message;
 	}
 
 	public void consoleMessage(String message) {

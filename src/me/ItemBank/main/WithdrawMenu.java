@@ -1,14 +1,11 @@
 package me.ItemBank.main;
 
-import java.util.ArrayList;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import javafx.scene.transform.MatrixType;
 import net.md_5.bungee.api.ChatColor;
 
 public class WithdrawMenu {
@@ -55,39 +52,37 @@ public class WithdrawMenu {
 
 	public void setup() {
 		BankMenus bankMenus = plugin.bank.bankMenus;
-		ArrayList<String> lore = new ArrayList<String>();
 
-		lore.add(ChatColor.BLUE + "~ItemBank~");
-		allItemsButton = bankMenus.makeButton(Material.ENDER_CHEST, ChatColor.GOLD + "All Items", lore);
-		aButtonIcon = bankMenus.makeButton(Material.SHULKER_BOX, ChatColor.GOLD + "A", lore);
-		bButtonIcon = bankMenus.makeButton(Material.WHITE_SHULKER_BOX, ChatColor.GOLD + "B", lore);
-		cButtonIcon = bankMenus.makeButton(Material.ORANGE_SHULKER_BOX, ChatColor.GOLD + "C", lore);
-		dButtonIcon = bankMenus.makeButton(Material.MAGENTA_SHULKER_BOX, ChatColor.GOLD + "D", lore);
-		eButtonIcon = bankMenus.makeButton(Material.LIGHT_BLUE_SHULKER_BOX, ChatColor.GOLD + "E", lore);
-		fButtonIcon = bankMenus.makeButton(Material.YELLOW_SHULKER_BOX, ChatColor.GOLD + "F", lore);
-		gButtonIcon = bankMenus.makeButton(Material.LIME_SHULKER_BOX, ChatColor.GOLD + "G", lore);
-		hButtonIcon = bankMenus.makeButton(Material.PINK_SHULKER_BOX, ChatColor.GOLD + "H", lore);
-		iButtonIcon = bankMenus.makeButton(Material.GRAY_SHULKER_BOX, ChatColor.GOLD + "I", lore);
-		jButtonIcon = bankMenus.makeButton(Material.LIGHT_GRAY_SHULKER_BOX, ChatColor.GOLD + "J", lore);
-		kButtonIcon = bankMenus.makeButton(Material.CYAN_SHULKER_BOX, ChatColor.GOLD + "K", lore);
-		lButtonIcon = bankMenus.makeButton(Material.PURPLE_SHULKER_BOX, ChatColor.GOLD + "L", lore);
-		mButtonIcon = bankMenus.makeButton(Material.BLUE_SHULKER_BOX, ChatColor.GOLD + "M", lore);
-		nButtonIcon = bankMenus.makeButton(Material.BROWN_SHULKER_BOX, ChatColor.GOLD + "N", lore);
-		oButtonIcon = bankMenus.makeButton(Material.GREEN_SHULKER_BOX, ChatColor.GOLD + "O", lore);
-		pButtonIcon = bankMenus.makeButton(Material.RED_SHULKER_BOX, ChatColor.GOLD + "P", lore);
-		qButtonIcon = bankMenus.makeButton(Material.BLACK_SHULKER_BOX, ChatColor.GOLD + "Q", lore);
-		rButtonIcon = bankMenus.makeButton(Material.SHULKER_BOX, ChatColor.GOLD + "R", lore);
-		sButtonIcon = bankMenus.makeButton(Material.WHITE_SHULKER_BOX, ChatColor.GOLD + "S", lore);
-		tButtonIcon = bankMenus.makeButton(Material.ORANGE_SHULKER_BOX, ChatColor.GOLD + "T", lore);
-		uButtonIcon = bankMenus.makeButton(Material.MAGENTA_SHULKER_BOX, ChatColor.GOLD + "U", lore);
-		vButtonIcon = bankMenus.makeButton(Material.LIGHT_BLUE_SHULKER_BOX, ChatColor.GOLD + "V", lore);
-		wButtonIcon = bankMenus.makeButton(Material.YELLOW_SHULKER_BOX, ChatColor.GOLD + "W", lore);
-		xButtonIcon = bankMenus.makeButton(Material.LIME_SHULKER_BOX, ChatColor.GOLD + "X", lore);
-		yButtonIcon = bankMenus.makeButton(Material.PINK_SHULKER_BOX, ChatColor.GOLD + "Y", lore);
-		zButtonIcon = bankMenus.makeButton(Material.GRAY_SHULKER_BOX, ChatColor.GOLD + "Z", lore);
-		backgroundIcon = bankMenus.makeButton(Material.LIGHT_BLUE_STAINED_GLASS_PANE, " ", lore);
-		backButtonIcon = bankMenus.makeButton(Material.RED_STAINED_GLASS_PANE, ChatColor.RED + "Back", lore);
-		exitIcon = bankMenus.makeButton(Material.BARRIER, ChatColor.RED + "Exit", lore);
+		allItemsButton = bankMenus.makeButton(Material.ENDER_CHEST, ChatColor.GOLD + "All Items");
+		aButtonIcon = bankMenus.makeButton(Material.SHULKER_BOX, ChatColor.GOLD + "A");
+		bButtonIcon = bankMenus.makeButton(Material.WHITE_SHULKER_BOX, ChatColor.GOLD + "B");
+		cButtonIcon = bankMenus.makeButton(Material.ORANGE_SHULKER_BOX, ChatColor.GOLD + "C");
+		dButtonIcon = bankMenus.makeButton(Material.MAGENTA_SHULKER_BOX, ChatColor.GOLD + "D");
+		eButtonIcon = bankMenus.makeButton(Material.LIGHT_BLUE_SHULKER_BOX, ChatColor.GOLD + "E");
+		fButtonIcon = bankMenus.makeButton(Material.YELLOW_SHULKER_BOX, ChatColor.GOLD + "F");
+		gButtonIcon = bankMenus.makeButton(Material.LIME_SHULKER_BOX, ChatColor.GOLD + "G");
+		hButtonIcon = bankMenus.makeButton(Material.PINK_SHULKER_BOX, ChatColor.GOLD + "H");
+		iButtonIcon = bankMenus.makeButton(Material.GRAY_SHULKER_BOX, ChatColor.GOLD + "I");
+		jButtonIcon = bankMenus.makeButton(Material.LIGHT_GRAY_SHULKER_BOX, ChatColor.GOLD + "J");
+		kButtonIcon = bankMenus.makeButton(Material.CYAN_SHULKER_BOX, ChatColor.GOLD + "K");
+		lButtonIcon = bankMenus.makeButton(Material.PURPLE_SHULKER_BOX, ChatColor.GOLD + "L");
+		mButtonIcon = bankMenus.makeButton(Material.BLUE_SHULKER_BOX, ChatColor.GOLD + "M");
+		nButtonIcon = bankMenus.makeButton(Material.BROWN_SHULKER_BOX, ChatColor.GOLD + "N");
+		oButtonIcon = bankMenus.makeButton(Material.GREEN_SHULKER_BOX, ChatColor.GOLD + "O");
+		pButtonIcon = bankMenus.makeButton(Material.RED_SHULKER_BOX, ChatColor.GOLD + "P");
+		qButtonIcon = bankMenus.makeButton(Material.BLACK_SHULKER_BOX, ChatColor.GOLD + "Q");
+		rButtonIcon = bankMenus.makeButton(Material.SHULKER_BOX, ChatColor.GOLD + "R");
+		sButtonIcon = bankMenus.makeButton(Material.WHITE_SHULKER_BOX, ChatColor.GOLD + "S");
+		tButtonIcon = bankMenus.makeButton(Material.ORANGE_SHULKER_BOX, ChatColor.GOLD + "T");
+		uButtonIcon = bankMenus.makeButton(Material.MAGENTA_SHULKER_BOX, ChatColor.GOLD + "U");
+		vButtonIcon = bankMenus.makeButton(Material.LIGHT_BLUE_SHULKER_BOX, ChatColor.GOLD + "V");
+		wButtonIcon = bankMenus.makeButton(Material.YELLOW_SHULKER_BOX, ChatColor.GOLD + "W");
+		xButtonIcon = bankMenus.makeButton(Material.LIME_SHULKER_BOX, ChatColor.GOLD + "X");
+		yButtonIcon = bankMenus.makeButton(Material.PINK_SHULKER_BOX, ChatColor.GOLD + "Y");
+		zButtonIcon = bankMenus.makeButton(Material.GRAY_SHULKER_BOX, ChatColor.GOLD + "Z");
+		backgroundIcon = bankMenus.makeButton(Material.LIGHT_BLUE_STAINED_GLASS_PANE, " ");
+		backButtonIcon = bankMenus.makeButton(Material.RED_STAINED_GLASS_PANE, ChatColor.RED + "Back");
+		exitIcon = bankMenus.makeButton(Material.BARRIER, ChatColor.RED + "Exit");
 
 		menuButtons = new ItemStack[45];
 		for (int slotNum = 0; slotNum < 45; slotNum++) {

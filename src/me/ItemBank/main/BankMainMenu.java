@@ -33,17 +33,14 @@ public class BankMainMenu {
 		ArrayList<String> lore = new ArrayList<String>();
 
 		lore.add("Items shared with everyone");
-		lore.add("~ItemBank~");
 		publicAccountButtonIcon = bankMenus.makeButton(Material.GOLD_INGOT, ChatColor.GOLD + "Public account", lore);
 		lore.clear();
 
 		lore.add("Your private account");
-		lore.add("~ItemBank~");
 		privateAccountButtonIcon = bankMenus.makeButton(Material.IRON_INGOT, ChatColor.GOLD + "Private account", lore);
 		lore.clear();
 
-		lore.add("~");
-		lore.add("~ItemBank~");
+		lore.add(" ");
 		backgroundIcon = bankMenus.makeButton(Material.LIGHT_BLUE_STAINED_GLASS_PANE, " ", lore);
 		lore.clear();
 

@@ -1,7 +1,5 @@
 package me.ItemBank.main;
 
-import java.util.ArrayList;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -10,7 +8,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import net.md_5.bungee.api.ChatColor;
-import net.minecraft.server.v1_15_R1.DataWatcher.Item;
 
 public class ListOfItemsMenu {
 	ItemBank plugin;
@@ -31,15 +28,13 @@ public class ListOfItemsMenu {
 
 	public void setup() {
 		BankMenus bankMenus = plugin.bank.bankMenus;
-		ArrayList<String> lore = new ArrayList<String>();
 
-		lore.add(ChatColor.BLUE + "~ItemBank~");
-		backButtonIcon = bankMenus.makeButton(Material.RED_STAINED_GLASS_PANE, ChatColor.RED + "Back", lore);
-		exitButtonIcon = bankMenus.makeButton(Material.BARRIER, ChatColor.RED + "Exit", lore);
+		backButtonIcon = bankMenus.makeButton(Material.RED_STAINED_GLASS_PANE, ChatColor.RED + "Back");
+		exitButtonIcon = bankMenus.makeButton(Material.BARRIER, ChatColor.RED + "Exit");
 		previousPageButtonIcon = bankMenus.makeButton(Material.LIME_STAINED_GLASS_PANE,
-				ChatColor.GOLD + "Previous Page", lore);
-		nextPageButtonIcon = bankMenus.makeButton(Material.LIME_STAINED_GLASS_PANE, ChatColor.GOLD + "Next Page", lore);
-		backgroundIcon = bankMenus.makeButton(Material.LIGHT_BLUE_STAINED_GLASS_PANE, " ", lore);
+				ChatColor.GOLD + "Previous Page");
+		nextPageButtonIcon = bankMenus.makeButton(Material.LIME_STAINED_GLASS_PANE, ChatColor.GOLD + "Next Page");
+		backgroundIcon = bankMenus.makeButton(Material.LIGHT_BLUE_STAINED_GLASS_PANE, " ");
 
 		menuButtons = new ItemStack[54];
 		for (int slotNum = 45; slotNum < 54; slotNum++) {

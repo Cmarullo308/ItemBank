@@ -32,15 +32,14 @@ public class DepositMenu {
 		BankMenus bankMenus = plugin.bank.bankMenus;
 		ArrayList<String> lore = new ArrayList<String>();
 
-		lore.add(ChatColor.BLUE + "~ItemBank~");
-		backButtonIcon = bankMenus.makeButton(Material.RED_STAINED_GLASS_PANE, ChatColor.RED + "Back", lore);
-		exitButtonIcon = bankMenus.makeButton(Material.BARRIER, ChatColor.RED + "Exit", lore);
+		backButtonIcon = bankMenus.makeButton(Material.RED_STAINED_GLASS_PANE, ChatColor.RED + "Back");
+		exitButtonIcon = bankMenus.makeButton(Material.BARRIER, ChatColor.RED + "Exit");
 		moveAllItemsUpButtonIcon = bankMenus.makeButton(Material.PURPLE_STAINED_GLASS_PANE,
 				ChatColor.DARK_PURPLE + "Move all items up");
 		moveAllItemsDownButtonIcon = bankMenus.makeButton(Material.PURPLE_STAINED_GLASS_PANE,
 				ChatColor.DARK_PURPLE + "Move all items down");
-		depositButtonIcon = bankMenus.makeButton(Material.LIME_STAINED_GLASS_PANE, ChatColor.GOLD + "Deposit Items",
-				lore);
+		depositButtonIcon = bankMenus.makeButton(Material.LIME_STAINED_GLASS_PANE, ChatColor.GOLD + "Deposit Items");
+		lore.add(" ");
 		backgroundIcon = bankMenus.makeButton(Material.LIGHT_BLUE_STAINED_GLASS_PANE, " ", lore);
 
 		menuButtons = new ItemStack[54];

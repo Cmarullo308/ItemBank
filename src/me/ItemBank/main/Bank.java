@@ -7,8 +7,8 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.block.Banner;
 import org.bukkit.block.Block;
 import org.bukkit.block.ShulkerBox;
 import org.bukkit.block.Sign;
@@ -23,11 +23,10 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BannerMeta;
 import org.bukkit.inventory.meta.BlockStateMeta;
 import org.bukkit.inventory.meta.Damageable;
-import org.bukkit.inventory.meta.ItemMeta;
 
+import me.ItemBank.main.BankMenus.BANKMENU;
 import me.ItemBank.main.Session.ACCOUNT;
 import net.md_5.bungee.api.ChatColor;
-import net.minecraft.server.v1_15_R1.Items;
 
 public class Bank implements Listener {
 	ItemBank plugin;
@@ -63,7 +62,8 @@ public class Bank implements Listener {
 			if (isSign(e.getClickedBlock().getType())) {
 				Sign sign = (Sign) block.getState();
 				if (isBankSign(sign)) {
-					sessions.put(player, new Session(player));
+					sessions.put(player, new Session());
+					sessions.get(player).setCurrentMenu(BANKMENU.BANKMAIN);
 					bankMenus.bankManinMenu.openMenuFor(player);
 				}
 			}
@@ -100,6 +100,10 @@ public class Bank implements Listener {
 	@EventHandler
 	public void onInventoryCloseEvent(InventoryCloseEvent event) {
 		Player player = (Player) event.getPlayer();
+
+		if (sessions.contains(player)) {
+			sessions.get(player).setCurrentMenu(BANKMENU.NONE);
+		}
 
 		String inventoryName = event.getView().getTitle();
 		if (inventoryName.substring(2).equals("Deposit Menu")) {
@@ -188,6 +192,7 @@ public class Bank implements Listener {
 			break;
 		case 18:
 			bankMenus.listOfItemsMenu.openMenuFor(player, sessions.get(player).getPageNum());
+			session.setMaterialSelected(null);
 			break;
 		case 22:
 			player.closeInventory();
@@ -195,10 +200,27 @@ public class Bank implements Listener {
 		case 26:
 			withdrawItemsToPlayer(player);
 			session.setAmountSelected(0);
+			if (session.getAccount() == ACCOUNT.GLOBAL) {
+				updateForOtherPlayersInAmountMenu(player, session.getMaterialSelected());
+			}
 			bankMenus.amountMenu.openMenuFor(player, session.getMaterialSelected());
 			break;
 		default:
 			break;
+		}
+	}
+
+	private void updateForOtherPlayersInAmountMenu(Player player, Material materialSelected) {
+		for (Player playerInServer : Bukkit.getOnlinePlayers()) {
+			if (sessions.get(playerInServer) != null) {
+				Session playerInServerSession = sessions.get(playerInServer);
+				if (playerInServerSession.getMaterialSelected() != null
+						&& playerInServerSession.getMaterialSelected().equals(materialSelected)) {
+					if (playerInServerSession.getCurrentMenu() == BANKMENU.AMOUNT) {
+						bankMenus.amountMenu.openMenuFor(playerInServer, materialSelected);
+					}
+				}
+			}
 		}
 	}
 
@@ -218,9 +240,20 @@ public class Bank implements Listener {
 
 		// Remove from bank
 		if (account == ACCOUNT.GLOBAL) {
-			item.accountAmounts.put(globalUUID, item.accountAmounts.get(globalUUID) - amountSelect);
+			if (item.accountAmounts.get(globalUUID) != null) {
+				item.accountAmounts.put(globalUUID, item.accountAmounts.get(globalUUID) - amountSelect);
+				if (bankItemsData.bankItemData.get(itemType).accountAmounts.get(globalUUID) < 1) {
+					bankItemsData.bankItemData.get(itemType).accountAmounts.remove(globalUUID);
+				}
+			}
 		} else if (account == ACCOUNT.PRIVATE) {
-			item.accountAmounts.put(player.getUniqueId(), item.accountAmounts.get(player.getUniqueId()) - amountSelect);
+			if (item.accountAmounts.get(player.getUniqueId()) != null) {
+				item.accountAmounts.put(player.getUniqueId(),
+						item.accountAmounts.get(player.getUniqueId()) - amountSelect);
+				if (bankItemsData.bankItemData.get(itemType).accountAmounts.get(player.getUniqueId()) < 1) {
+					bankItemsData.bankItemData.get(itemType).accountAmounts.remove(player.getUniqueId());
+				}
+			}
 		}
 
 		bankItemsData.saveBankData();
@@ -256,9 +289,11 @@ public class Bank implements Listener {
 				pageNum = session.getPageNum() + 1;
 				session.setPageNum(pageNum);
 				bankMenus.listOfItemsMenu.openMenuFor(player, pageNum);
+				session.setCurrentMenu(BANKMENU.LISTOFITEMS);
 			}
 		} else if (slotClicked == 45) {
 			bankMenus.withdrawMenu.openMenuFor(player);
+			session.setCurrentMenu(BANKMENU.WITHDRAW);
 		} else if (slotClicked == 49) {
 			player.closeInventory();
 		} else if (slotClicked == 47) {
@@ -266,22 +301,27 @@ public class Bank implements Listener {
 				pageNum = session.getPageNum() - 1;
 				session.setPageNum(pageNum);
 				bankMenus.listOfItemsMenu.openMenuFor(player, pageNum);
+				session.setCurrentMenu(BANKMENU.LISTOFITEMS);
 			}
 		} else if (slotClicked >= 0 && slotClicked <= 44) {
 			if (event.getInventory().getContents()[slotClicked] != null) {
 				session.setMaterialSelected(event.getInventory().getContents()[slotClicked].getType());
 				bankMenus.amountMenu.openMenuFor(player, event.getInventory().getContents()[slotClicked].getType());
+				session.setCurrentMenu(BANKMENU.AMOUNT);
 			}
 		}
 	}
 
 	private void withdrawButtonClicked(InventoryClickEvent event, Player player) {
 		int slotClicked = event.getRawSlot();
+		Session session = sessions.get(player);
 
 		if (slotClicked >= 9 && slotClicked <= 35) {
 			openListOfItemsMenu(player, event.getInventory().getContents()[slotClicked].getItemMeta().getDisplayName());
+			session.setCurrentMenu(BANKMENU.LISTOFITEMS);
 		} else if (slotClicked == 36) {
 			bankMenus.depositOrWithdrawMenu.openMenuFor(player);
+			session.setCurrentMenu(BANKMENU.DEPOSITORWHITDRAW);
 		} else if (slotClicked == 40) {
 			player.closeInventory();
 		}
@@ -353,10 +393,12 @@ public class Bank implements Listener {
 
 	private void depositMenuClicked(InventoryClickEvent event, Player player) {
 		int slotClicked = event.getRawSlot();
+		Session session = sessions.get(player);
 
 		switch (slotClicked) {
 		case 45:
 			bankMenus.depositOrWithdrawMenu.openMenuFor(player);
+			session.setCurrentMenu(BANKMENU.DEPOSITORWHITDRAW);
 			break;
 		case 47:
 			moveAllItemsDown(event, player);
@@ -443,6 +485,7 @@ public class Bank implements Listener {
 			if (isValidItem(items[itemNum])) {
 				if (account == ACCOUNT.GLOBAL) {
 					depositItems(items[itemNum], globalUUID);
+					updateForOtherPlayersInAmountMenu(player, items[itemNum].getType());
 				} else {
 					depositItems(items[itemNum], player.getUniqueId());
 				}
@@ -558,16 +601,20 @@ public class Bank implements Listener {
 	 */
 	private void depositOrWithdrawMenuClicked(InventoryClickEvent event, Player player) {
 		int slotClicked = event.getRawSlot();
+		Session session = sessions.get(player);
 
 		switch (slotClicked) {
 		case 2:
 			bankMenus.depositMenu.openMenuFor(player);
+			session.setCurrentMenu(BANKMENU.DEPOSIT);
 			break;
 		case 6:
 			bankMenus.withdrawMenu.openMenuFor(player);
+			session.setCurrentMenu(BANKMENU.WITHDRAW);
 			break;
 		case 9:
 			bankMenus.bankManinMenu.openMenuFor(player);
+			session.setCurrentMenu(BANKMENU.BANKMAIN);
 			break;
 		case 13:
 			player.closeInventory();
@@ -580,14 +627,18 @@ public class Bank implements Listener {
 	private void bankMainMenuButtonClicked(InventoryClickEvent event, Player player) {
 		int slotClicked = event.getRawSlot();
 
+		Session session = sessions.get(player);
+
 		switch (slotClicked) {
 		case 2:
-			sessions.get(player).setAccount(ACCOUNT.GLOBAL);
+			session.setAccount(ACCOUNT.GLOBAL);
 			bankMenus.depositOrWithdrawMenu.openMenuFor(player);
+			session.setCurrentMenu(BANKMENU.DEPOSITORWHITDRAW);
 			break;
 		case 6:
-			sessions.get(player).setAccount(ACCOUNT.PRIVATE);
+			session.setAccount(ACCOUNT.PRIVATE);
 			bankMenus.depositOrWithdrawMenu.openMenuFor(player);
+			session.setCurrentMenu(BANKMENU.DEPOSITORWHITDRAW);
 			break;
 		case 13:
 			player.closeInventory();

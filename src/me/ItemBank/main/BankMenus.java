@@ -16,6 +16,10 @@ public class BankMenus {
 	ListOfItemsMenu listOfItemsMenu;
 	AmountMenu amountMenu;
 
+	enum BANKMENU {
+		BANKMAIN, DEPOSITORWHITDRAW, DEPOSIT, WITHDRAW, LISTOFITEMS, AMOUNT, NONE
+	}
+
 	public BankMenus(ItemBank plugin) {
 		this.plugin = plugin;
 
