@@ -1,6 +1,7 @@
 package me.ItemBank.main;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -8,6 +9,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import SpigotTools.ItemStackEditor;
+import me.ItemBank.main.Session.ACCOUNT;
 import net.md_5.bungee.api.ChatColor;
 
 public class DepositOrWithdrawMenu {
@@ -64,9 +67,31 @@ public class DepositOrWithdrawMenu {
 	}
 
 	public void openMenuFor(Player player) {
+		Session session = plugin.bank.sessions.get(player);
+		UUID id;
+		if (session.getAccount() == ACCOUNT.GLOBAL) {
+			id = plugin.bank.globalUUID;
+		} else {
+			id = player.getUniqueId();
+		}
+
+		long totalNumberOfItemsInAccount = 0;
+
+		for (BankItem bankItem : plugin.bank.bankItemsData.bankItemData.values()) {
+			if (bankItem.accountAmounts.containsKey(id)) {
+				totalNumberOfItemsInAccount += bankItem.accountAmounts.get(id);
+			}
+		}
+
+		String withrawButtonOriginalName = menuButtons[6].getItemMeta().getDisplayName();
+		ItemStackEditor.setDisplayName(menuButtons[6], menuButtons[6].getItemMeta().getDisplayName() + " ("
+				+ plugin.decimalFormat.format(totalNumberOfItemsInAccount) + " Items)");
+
 		inventory = Bukkit.createInventory(player, 18, menuName);
 		inventory.setContents(menuButtons);
 
 		player.openInventory(inventory);
+
+		ItemStackEditor.setDisplayName(menuButtons[6], withrawButtonOriginalName);
 	}
 }

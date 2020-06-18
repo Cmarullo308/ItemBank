@@ -14,6 +14,7 @@ public class WithdrawMenu {
 	Inventory inventory;
 	String menuName;
 	ItemStack[] menuButtons;
+	ItemStack sortByCategoryButton;
 	ItemStack allItemsButton;
 	ItemStack aButtonIcon;
 	ItemStack bButtonIcon;
@@ -53,6 +54,7 @@ public class WithdrawMenu {
 	public void setup() {
 		BankMenus bankMenus = plugin.bank.bankMenus;
 
+		sortByCategoryButton = bankMenus.makeButton(Material.BOOKSHELF, ChatColor.GOLD + "Categories");
 		allItemsButton = bankMenus.makeButton(Material.ENDER_CHEST, ChatColor.GOLD + "All Items");
 		aButtonIcon = bankMenus.makeButton(Material.SHULKER_BOX, ChatColor.GOLD + "A");
 		bButtonIcon = bankMenus.makeButton(Material.WHITE_SHULKER_BOX, ChatColor.GOLD + "B");
@@ -87,6 +89,9 @@ public class WithdrawMenu {
 		menuButtons = new ItemStack[45];
 		for (int slotNum = 0; slotNum < 45; slotNum++) {
 			switch (slotNum) {
+			case 4:
+				menuButtons[slotNum] = sortByCategoryButton.clone();
+				break;
 			case 9:
 				menuButtons[slotNum] = allItemsButton.clone();
 				break;
@@ -181,7 +186,7 @@ public class WithdrawMenu {
 		}
 	}
 
-	public void openMenuFor(Player player) {
+	public void openMenuFor(Player player) {		
 		inventory = Bukkit.createInventory(player, 45, this.menuName);
 		inventory.setContents(menuButtons);
 

@@ -58,15 +58,13 @@ public class BankItemsData {
 			Set<String> UUIDs = null;
 			try {
 				UUIDs = bankFileConfig.getConfigurationSection("Items." + materialName).getKeys(false);
-//				plugin.consoleMessage(UUIDs.toString());
-			} catch (Exception e) {
-				plugin.consoleMessage(e.toString());
+			} catch (java.lang.NullPointerException e) {
+				
 			}
 
 			if (UUIDs != null) {
 				// For ever ID that has this item
 				for (String idString : UUIDs) {
-//					plugin.consoleMessage(materialName + " : " + idString);
 					UUID id = UUID.fromString(idString);
 					Material material = Material.valueOf(materialName);
 					Integer amount = Integer
@@ -76,7 +74,6 @@ public class BankItemsData {
 					}
 					bankItemData.get(material).deposit(id, amount);
 				}
-//				plugin.consoleMessage("\n");
 			}
 		}
 

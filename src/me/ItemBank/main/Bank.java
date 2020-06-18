@@ -119,7 +119,6 @@ public class Bank implements Listener {
 	}
 
 	private void givePlayerBackDepositItems(Player player, ItemStack itemStack) {
-		plugin.consoleMessage(itemStack.toString() + "\n");
 		HashMap<Integer, ItemStack> excessItems = player.getInventory().addItem(itemStack);
 		for (Map.Entry<Integer, ItemStack> ex : excessItems.entrySet()) {
 			player.getWorld().dropItem(player.getLocation(), ex.getValue());
@@ -137,30 +136,80 @@ public class Bank implements Listener {
 				event.setCancelled(true);
 				bankMainMenuButtonClicked(event, player);
 			}
-		} else if (inventoryName.equals(bankMenus.depositOrWithdrawMenu.menuName)) {
+			// Clicked within DepositOrWithdraw menu
+//		} else if (inventoryName.equals(bankMenus.depositOrWithdrawMenu.menuName)) {
+		} else if (isDepositOrWithdrawMenu(inventoryName)) {
 			if (event.getRawSlot() < 18) {
 				event.setCancelled(true);
 				depositOrWithdrawMenuClicked(event, player);
 			}
+			// Clicked within Deposit menu
 		} else if (inventoryName.equals(bankMenus.depositMenu.menuName)) {
 			if (event.getRawSlot() > 44 && event.getRawSlot() < 54) {
 				event.setCancelled(true);
 				depositMenuClicked(event, player);
 			}
+			// Clicked within withdraw menu
 		} else if (inventoryName.equals(bankMenus.withdrawMenu.menuName)) {
 			if (event.getRawSlot() < 45) {
 				event.setCancelled(true);
 				withdrawButtonClicked(event, player);
 			}
-		} else if (isListOfItemsMenu(inventoryName)) {
+			// Clicked within withdrawMenuCategories menu
+		} else if (inventoryName.equals(bankMenus.withdrawMenuCategoriesMenu.menuName)) {
+			event.setCancelled(true);
+			withdrawMenuCategoriesMenuClicked(event, player);
+		}
+		// Clicked within ListOfItems menu
+		else if (isListOfItemsMenu(inventoryName)) {
+			event.setCancelled(true);
 			if (event.getRawSlot() < 54) {
-				event.setCancelled(true);
 				listOfItemsMenuButtonClicked(event, player);
 			}
+			// Clicked within amount menu
 		} else if (isAmountMenu(inventoryName)) {
 			if (event.getRawSlot() < 27) {
 				event.setCancelled(true);
 				amountMenuClicked(event, player);
+			}
+		}
+	}
+
+	private boolean isDepositOrWithdrawMenu(String inventoryName) {
+		if (inventoryName.length() < 21) {
+			return false;
+		}
+
+		if (inventoryName.substring(0, 21).equals(bankMenus.depositOrWithdrawMenu.menuName)) {
+			return true;
+		}
+
+		return false;
+	}
+
+	private void withdrawMenuCategoriesMenuClicked(InventoryClickEvent event, Player player) {
+		int slotClicked = event.getRawSlot();
+		Session session = sessions.get(player);
+
+		ItemStack[] eventContents = event.getInventory().getContents();
+
+		if (slotClicked == 4) {
+			session.setPageNum(1); // delete later?
+			bankMenus.withdrawMenu.openMenuFor(player);
+			session.setCameFromCategories(false);
+		} else if (slotClicked == 45) {
+			bankMenus.depositOrWithdrawMenu.openMenuFor(player);
+			session.setCameFromCategories(false);
+		} else if (slotClicked == 47 && eventContents[slotClicked].getType() == Material.LIME_STAINED_GLASS_PANE) {
+			bankMenus.withdrawMenuCategoriesMenu.openMenuFor(player, session.getPageNum() - 1);
+		} else if (slotClicked == 51 && eventContents[slotClicked].getType() == Material.LIME_STAINED_GLASS_PANE) {
+			bankMenus.withdrawMenuCategoriesMenu.openMenuFor(player, session.getPageNum() + 1);
+		} else if (slotClicked == 49) {
+			player.closeInventory();
+		} else {
+			if (eventContents[slotClicked] != null) {
+				session.setCategory(eventContents[slotClicked].getItemMeta().getDisplayName());
+				openListOfItemsMenuFromCategory(player, session.getCategory());
 			}
 		}
 	}
@@ -170,6 +219,10 @@ public class Bank implements Listener {
 		Session session = sessions.get(player);
 
 		switch (slotClicked) {
+		case 10:
+			session.setAmountSelected(session.getAmountSelected() - 64);
+			bankMenus.amountMenu.openMenuFor(player, session.getMaterialSelected());
+			break;
 		case 11:
 			session.setAmountSelected(session.getAmountSelected() - 10);
 			bankMenus.amountMenu.openMenuFor(player, session.getMaterialSelected());
@@ -190,8 +243,13 @@ public class Bank implements Listener {
 			session.setAmountSelected(session.getAmountSelected() + 10);
 			bankMenus.amountMenu.openMenuFor(player, session.getMaterialSelected());
 			break;
+		case 16:
+			session.setAmountSelected(session.getAmountSelected() + 64);
+			bankMenus.amountMenu.openMenuFor(player, session.getMaterialSelected());
+			break;
 		case 18:
 			bankMenus.listOfItemsMenu.openMenuFor(player, sessions.get(player).getPageNum());
+			session.setAmountSelected(0);
 			session.setMaterialSelected(null);
 			break;
 		case 22:
@@ -216,12 +274,36 @@ public class Bank implements Listener {
 				Session playerInServerSession = sessions.get(playerInServer);
 				if (playerInServerSession.getMaterialSelected() != null
 						&& playerInServerSession.getMaterialSelected().equals(materialSelected)) {
-					if (playerInServerSession.getCurrentMenu() == BANKMENU.AMOUNT) {
+					if (playerInServerSession.getCurrentMenu() == BANKMENU.AMOUNT
+							&& playerInSameMenu(playerInServer, materialSelected)) {
 						bankMenus.amountMenu.openMenuFor(playerInServer, materialSelected);
 					}
 				}
 			}
 		}
+	}
+
+	// Prevents the amount menu from opening up for people not currently using the bank
+	private boolean playerInSameMenu(Player player, Material material) {
+		ItemStack[] invItems = player.getOpenInventory().getTopInventory().getContents();
+
+		if (invItems[4] == null) {
+			return false;
+		}
+
+		if (invItems[4].getType() != material) {
+			return false;
+		}
+
+		if (invItems[22].getType() != Material.BARRIER) {
+			return false;
+		}
+
+		if (!invItems[22].getItemMeta().getDisplayName().equals(ChatColor.RED + "Exit")) {
+			return false;
+		}
+
+		return true;
 	}
 
 	private void withdrawItemsToPlayer(Player player) {
@@ -292,7 +374,12 @@ public class Bank implements Listener {
 				session.setCurrentMenu(BANKMENU.LISTOFITEMS);
 			}
 		} else if (slotClicked == 45) {
-			bankMenus.withdrawMenu.openMenuFor(player);
+			session.setPageNum(1);
+			if (!session.cameFromCategories()) {
+				bankMenus.withdrawMenu.openMenuFor(player);
+			} else {
+				bankMenus.withdrawMenuCategoriesMenu.openMenuFor(player, 1);
+			}
 			session.setCurrentMenu(BANKMENU.WITHDRAW);
 		} else if (slotClicked == 49) {
 			player.closeInventory();
@@ -316,7 +403,12 @@ public class Bank implements Listener {
 		int slotClicked = event.getRawSlot();
 		Session session = sessions.get(player);
 
-		if (slotClicked >= 9 && slotClicked <= 35) {
+		if (slotClicked == 4) {
+			bankMenus.withdrawMenuCategoriesMenu.openMenuFor(player, 1);
+			session.setCameFromCategories(true);
+			session.setPageNum(1);
+			session.setCurrentMenu(BANKMENU.WITHDRAWCATEGORIES);
+		} else if (slotClicked >= 9 && slotClicked <= 35) {
 			openListOfItemsMenu(player, event.getInventory().getContents()[slotClicked].getItemMeta().getDisplayName());
 			session.setCurrentMenu(BANKMENU.LISTOFITEMS);
 		} else if (slotClicked == 36) {
@@ -325,6 +417,602 @@ public class Bank implements Listener {
 		} else if (slotClicked == 40) {
 			player.closeInventory();
 		}
+	}
+
+	private void openListOfItemsMenuFromCategory(Player player, String category) {
+		// All lettered items
+		ArrayList<Material> items = new ArrayList<Material>();
+		// Get all materials in bank
+		for (Material material : bankItemsData.bankItemData.keySet()) {
+			items.add(material);
+		}
+
+		// Alphabetize items
+		Collections.sort(items);
+
+		// Extract all items that belong to player
+		Session session = sessions.get(player);
+		session.items = new ArrayList<Material>();
+		session.amounts = new ArrayList<Integer>();
+
+		UUID uuid;
+
+		if (session.getAccount() == ACCOUNT.GLOBAL) {
+			uuid = plugin.bank.globalUUID;
+		} else {
+			uuid = player.getUniqueId();
+		}
+
+		for (Material material : items) {
+			if (accountHasItem(material, uuid)) {
+				if (isInSelectedCategory(material, session.getCategory())) {
+					session.items.add(material);
+					session.amounts.add(bankItemsData.bankItemData.get(material).accountAmounts.get(uuid));
+				}
+			}
+		}
+
+		session.numOfPages = session.items.size() / 45;
+		if (session.items.size() % 45 != 0) {
+			session.numOfPages++;
+		}
+
+		session.setPageNum(1);
+		bankMenus.listOfItemsMenu.openMenuFor(player, 1);
+	}
+
+	private boolean isInSelectedCategory(Material material, String category) {
+		switch (category.toLowerCase()) {
+		case "wool":
+			if (material.toString().endsWith("WOOL")) {
+				return true;
+			}
+			break;
+		case "wood":
+			if (material.toString().endsWith("WOOD")) {
+				return true;
+			} else if (material.toString().endsWith("LOG")) {
+				return true;
+			} else if (material.toString().endsWith("PLANKS")) {
+				return true;
+			}
+
+			break;
+		case "stairs":
+			if (material.toString().endsWith("STAIRS")) {
+				return true;
+			}
+			break;
+		case "weapons":
+			switch (material) {
+			case BOW:
+			case ARROW:
+			case IRON_SWORD:
+			case WOODEN_SWORD:
+			case STONE_SWORD:
+			case DIAMOND_SWORD:
+			case GOLDEN_SWORD:
+			case TRIDENT:
+			case CROSSBOW:
+				return true;
+			default:
+				break;
+			}
+			break;
+		case "potion ingredients":
+			switch (material) {
+			case FERMENTED_SPIDER_EYE:
+			case REDSTONE:
+			case GLOWSTONE:
+			case SPIDER_EYE:
+			case SUGAR:
+			case BROWN_MUSHROOM:
+			case GLISTERING_MELON_SLICE:
+			case MELON_SLICE:
+			case GOLDEN_CARROT:
+			case TURTLE_HELMET:
+			case GLASS_BOTTLE:
+			case NETHER_WART:
+			case GUNPOWDER:
+			case RABBIT_FOOT:
+			case MAGMA_CREAM:
+			case BLAZE_POWDER:
+			case GHAST_TEAR:
+			case PUFFERFISH:
+			case PHANTOM_MEMBRANE:
+				return true;
+			default:
+				break;
+			}
+			break;
+		case "fences":
+			if (material.toString().contains("FENCE")) {
+				return true;
+			}
+			break;
+		case "signs":
+			switch (material) {
+			case OAK_SIGN:
+			case SPRUCE_SIGN:
+			case BIRCH_SIGN:
+			case JUNGLE_SIGN:
+			case ACACIA_SIGN:
+			case DARK_OAK_SIGN:
+				return true;
+			default:
+				break;
+			}
+			break;
+		case "mined":
+			switch (material) {
+			case DIAMOND_BLOCK:
+			case DIAMOND:
+			case IRON_NUGGET:
+			case IRON_INGOT:
+			case IRON_BLOCK:
+			case GOLD_NUGGET:
+			case GOLD_INGOT:
+			case GOLD_BLOCK:
+			case GLOWSTONE:
+			case GLOWSTONE_DUST:
+			case COAL:
+			case COAL_BLOCK:
+			case EMERALD:
+			case EMERALD_BLOCK:
+			case REDSTONE:
+			case REDSTONE_BLOCK:
+			case LAPIS_BLOCK:
+			case LAPIS_LAZULI:
+			case QUARTZ:
+			case QUARTZ_BLOCK:
+				return true;
+			default:
+				break;
+			}
+			break;
+		case "armor":
+			switch (material) {
+			case LEATHER_HELMET:
+			case CHAINMAIL_HELMET:
+			case IRON_HELMET:
+			case DIAMOND_HELMET:
+			case GOLDEN_HELMET:
+			case LEATHER_CHESTPLATE:
+			case CHAINMAIL_CHESTPLATE:
+			case IRON_CHESTPLATE:
+			case DIAMOND_CHESTPLATE:
+			case GOLDEN_CHESTPLATE:
+			case LEATHER_LEGGINGS:
+			case CHAINMAIL_LEGGINGS:
+			case IRON_LEGGINGS:
+			case DIAMOND_LEGGINGS:
+			case GOLDEN_LEGGINGS:
+			case LEATHER_BOOTS:
+			case CHAINMAIL_BOOTS:
+			case IRON_BOOTS:
+			case DIAMOND_BOOTS:
+			case GOLDEN_BOOTS:
+			case TURTLE_HELMET:
+			case SHIELD:
+			case IRON_HORSE_ARMOR:
+			case GOLDEN_HORSE_ARMOR:
+			case DIAMOND_HORSE_ARMOR:
+			case LEATHER_HORSE_ARMOR:
+				return true;
+			default:
+				break;
+			}
+			break;
+		case "transportation":
+			switch (material) {
+			case POWERED_RAIL:
+			case DETECTOR_RAIL:
+			case RAIL:
+			case ACTIVATOR_RAIL:
+			case MINECART:
+			case SADDLE:
+			case OAK_BOAT:
+			case CHEST_MINECART:
+			case FURNACE_MINECART:
+			case CARROT_ON_A_STICK:
+			case TNT_MINECART:
+			case HOPPER_MINECART:
+			case ELYTRA:
+			case SPRUCE_BOAT:
+			case BIRCH_BOAT:
+			case JUNGLE_BOAT:
+			case ACACIA_BOAT:
+			case DARK_OAK_BOAT:
+				return true;
+			default:
+				break;
+			}
+			break;
+		case "dyes":
+			if (material.toString().endsWith("DYE")) {
+				return true;
+			}
+			break;
+		case "concrete":
+			if (material.toString().endsWith("CONCRETE")) {
+				return true;
+			} else if (material.toString().endsWith("POWDER")) {
+				if (material != Material.GUNPOWDER && material != Material.BLAZE_POWDER) {
+					return true;
+				}
+			}
+			break;
+		case "seeds":
+			switch (material) {
+			case WHEAT_SEEDS:
+			case PUMPKIN_SEEDS:
+			case MELON_SEEDS:
+			case BEETROOT_SEEDS:
+				return true;
+			default:
+				break;
+			}
+			break;
+		case "buttons":
+			switch (material) {
+			case STONE_BUTTON:
+			case OAK_BUTTON:
+			case SPRUCE_BUTTON:
+			case BIRCH_BUTTON:
+			case JUNGLE_BUTTON:
+			case ACACIA_BUTTON:
+			case DARK_OAK_BUTTON:
+				return true;
+			default:
+				break;
+			}
+			break;
+		case "boats":
+			switch (material) {
+			case OAK_BOAT:
+			case SPRUCE_BOAT:
+			case BIRCH_BOAT:
+			case JUNGLE_BOAT:
+			case ACACIA_BOAT:
+			case DARK_OAK_BOAT:
+				return true;
+			default:
+				break;
+			}
+			break;
+		case "banners":
+			if (material.toString().endsWith("BANNER")) {
+				return true;
+			}
+			break;
+		case "music discs":
+			if (material.toString().startsWith("MUSIC")) {
+				return true;
+			}
+			break;
+		case "redstone":
+			switch (material) {
+			case DISPENSER:
+			case NOTE_BLOCK:
+			case STICKY_PISTON:
+			case PISTON:
+			case TNT:
+			case LEVER:
+			case STONE_PRESSURE_PLATE:
+			case OAK_PRESSURE_PLATE:
+			case SPRUCE_PRESSURE_PLATE:
+			case BIRCH_PRESSURE_PLATE:
+			case JUNGLE_PRESSURE_PLATE:
+			case ACACIA_PRESSURE_PLATE:
+			case DARK_OAK_PRESSURE_PLATE:
+			case REDSTONE_TORCH:
+			case STONE_BUTTON:
+			case OAK_TRAPDOOR:
+			case SPRUCE_TRAPDOOR:
+			case BIRCH_TRAPDOOR:
+			case JUNGLE_TRAPDOOR:
+			case ACACIA_TRAPDOOR:
+			case DARK_OAK_TRAPDOOR:
+			case OAK_FENCE_GATE:
+			case SPRUCE_FENCE_GATE:
+			case BIRCH_FENCE_GATE:
+			case JUNGLE_FENCE_GATE:
+			case ACACIA_FENCE_GATE:
+			case DARK_OAK_FENCE:
+			case REDSTONE_LAMP:
+			case TRIPWIRE_HOOK:
+			case OAK_BUTTON:
+			case SPRUCE_BUTTON:
+			case BIRCH_BUTTON:
+			case JUNGLE_BUTTON:
+			case ACACIA_BUTTON:
+			case DARK_OAK_BUTTON:
+			case TRAPPED_CHEST:
+			case LIGHT_WEIGHTED_PRESSURE_PLATE:
+			case HEAVY_WEIGHTED_PRESSURE_PLATE:
+			case DAYLIGHT_DETECTOR:
+			case REDSTONE_BLOCK:
+			case HOPPER:
+			case DROPPER:
+			case IRON_TRAPDOOR:
+			case OBSERVER:
+			case IRON_DOOR:
+			case OAK_DOOR:
+			case SPRUCE_DOOR:
+			case BIRCH_DOOR:
+			case JUNGLE_DOOR:
+			case ACACIA_DOOR:
+			case DARK_OAK_DOOR:
+			case REPEATER:
+			case COMPARATOR:
+			case REDSTONE:
+			case LECTERN:
+				return true;
+			default:
+				break;
+			}
+			break;
+		case "plants and leaves":
+			switch (material) {
+			case OAK_SAPLING:
+			case SPRUCE_SAPLING:
+			case BIRCH_SAPLING:
+			case JUNGLE_SAPLING:
+			case ACACIA_SAPLING:
+			case DARK_OAK_SAPLING:
+			case OAK_LEAVES:
+			case SPRUCE_LEAVES:
+			case BIRCH_LEAVES:
+			case JUNGLE_LEAVES:
+			case ACACIA_LEAVES:
+			case DARK_OAK_LEAVES:
+			case COBWEB:
+			case GRASS:
+			case FERN:
+			case DEAD_BUSH:
+			case SEAGRASS:
+			case SEA_PICKLE:
+			case DANDELION:
+			case POPPY:
+			case BLUE_ORCHID:
+			case ALLIUM:
+			case AZURE_BLUET:
+			case RED_TULIP:
+			case ORANGE_TULIP:
+			case WHITE_TULIP:
+			case PINK_TULIP:
+			case OXEYE_DAISY:
+			case CORNFLOWER:
+			case LILY_OF_THE_VALLEY:
+			case WITHER_ROSE:
+			case BROWN_MUSHROOM:
+			case RED_MUSHROOM:
+			case CHORUS_FLOWER:
+			case CACTUS:
+			case VINE:
+			case LILY_PAD:
+			case SUNFLOWER:
+			case LILAC:
+			case ROSE_BUSH:
+			case PEONY:
+			case TALL_GRASS:
+			case LARGE_FERN:
+			case TUBE_CORAL:
+			case BRAIN_CORAL:
+			case BUBBLE_CORAL:
+			case FIRE_CORAL:
+			case HORN_CORAL:
+			case DEAD_BRAIN_CORAL:
+			case DEAD_BUBBLE_CORAL:
+			case DEAD_FIRE_CORAL:
+			case DEAD_HORN_CORAL:
+			case DEAD_TUBE_CORAL:
+			case TUBE_CORAL_FAN:
+			case BRAIN_CORAL_FAN:
+			case BUBBLE_CORAL_FAN:
+			case FIRE_CORAL_FAN:
+			case HORN_CORAL_FAN:
+			case DEAD_TUBE_CORAL_FAN:
+			case DEAD_BRAIN_CORAL_FAN:
+			case DEAD_BUBBLE_CORAL_FAN:
+			case DEAD_FIRE_CORAL_FAN:
+			case DEAD_HORN_CORAL_FAN:
+				return true;
+			default:
+				break;
+			}
+			break;
+		case "stones":
+			switch (material) {
+			case STONE:
+			case GRANITE:
+			case POLISHED_GRANITE:
+			case DIORITE:
+			case POLISHED_DIORITE:
+			case ANDESITE:
+			case POLISHED_ANDESITE:
+			case COBBLESTONE:
+			case BEDROCK:
+			case GRAVEL:
+			case STONE_SLAB:
+			case SMOOTH_STONE_SLAB:
+			case SANDSTONE_SLAB:
+			case CUT_SANDSTONE_SLAB:
+			case COBBLESTONE_SLAB:
+			case STONE_BRICK_SLAB:
+			case RED_SANDSTONE_SLAB:
+			case CUT_RED_SANDSTONE_SLAB:
+			case SMOOTH_STONE:
+			case OBSIDIAN:
+			case COBBLESTONE_STAIRS:
+			case STONE_BRICKS:
+			case MOSSY_STONE_BRICKS:
+			case CRACKED_STONE_BRICKS:
+			case CHISELED_STONE_BRICKS:
+			case STONE_BRICK_STAIRS:
+			case END_STONE:
+			case END_STONE_BRICKS:
+			case SANDSTONE_STAIRS:
+			case RED_SANDSTONE:
+			case CHISELED_RED_SANDSTONE:
+			case CUT_RED_SANDSTONE:
+			case RED_SANDSTONE_STAIRS:
+			case POLISHED_GRANITE_STAIRS:
+			case SMOOTH_RED_SANDSTONE_STAIRS:
+			case MOSSY_STONE_BRICK_SLAB:
+			case POLISHED_DIORITE_STAIRS:
+			case MOSSY_COBBLESTONE_STAIRS:
+			case END_STONE_BRICK_STAIRS:
+			case STONE_STAIRS:
+			case SMOOTH_SANDSTONE_STAIRS:
+			case GRANITE_STAIRS:
+			case ANDESITE_STAIRS:
+			case POLISHED_ANDESITE_STAIRS:
+			case DIORITE_STAIRS:
+			case POLISHED_GRANITE_SLAB:
+			case SMOOTH_RED_SANDSTONE_SLAB:
+			case POLISHED_DIORITE_SLAB:
+			case MOSSY_COBBLESTONE_SLAB:
+			case END_STONE_BRICK_SLAB:
+			case SMOOTH_SANDSTONE_SLAB:
+			case GRANITE_SLAB:
+			case ANDESITE_SLAB:
+			case POLISHED_ANDESITE_SLAB:
+			case DIORITE_SLAB:
+				return true;
+			default:
+				break;
+			}
+			break;
+		case "slabs":
+			if (material.toString().endsWith("SLAB")) {
+				return true;
+			}
+			break;
+		case "doors":
+			switch (material) {
+			case OAK_TRAPDOOR:
+			case SPRUCE_TRAPDOOR:
+			case BIRCH_TRAPDOOR:
+			case JUNGLE_TRAPDOOR:
+			case ACACIA_TRAPDOOR:
+			case DARK_OAK_TRAPDOOR:
+			case IRON_TRAPDOOR:
+			case IRON_DOOR:
+			case OAK_DOOR:
+			case SPRUCE_DOOR:
+			case BIRCH_DOOR:
+			case JUNGLE_DOOR:
+			case ACACIA_DOOR:
+			case DARK_OAK_DOOR:
+				return true;
+			default:
+				break;
+			}
+			break;
+		case "ores":
+			switch (material) {
+			case GOLD_ORE:
+			case IRON_ORE:
+			case COAL_ORE:
+			case LAPIS_ORE:
+			case DIAMOND_ORE:
+			case REDSTONE_ORE:
+			case EMERALD_ORE:
+			case NETHER_QUARTZ_ORE:
+				return true;
+			default:
+				break;
+			}
+			break;
+		case "clay":
+			if (material.toString().endsWith("TERRACOTTA")) {
+				return true;
+			} else if (material == Material.CLAY || material == Material.CLAY_BALL) {
+				return true;
+			}
+			break;
+		case "walls":
+			if (material.toString().endsWith("WALL")) {
+				return true;
+			}
+			break;
+		case "tools":
+			if (material.toString().endsWith("SHOVEL")) {
+				return true;
+			} else if (material.toString().endsWith("PICKAXE")) {
+				return true;
+			} else if (material.toString().endsWith("AXE")) {
+				return true;
+			} else if (material.toString().endsWith("HOE")) {
+				return true;
+			} else if (material == Material.SHEARS) {
+				return true;
+			} else if (material == Material.FLINT_AND_STEEL) {
+				return true;
+			} else if (material == Material.COMPASS) {
+				return true;
+			} else if (material == Material.FISHING_ROD) {
+				return true;
+			} else if (material == Material.CLOCK) {
+				return true;
+			} else if (material == Material.COMPASS) {
+				return true;
+			} else if (material == Material.LEAD) {
+				return true;
+			} else if (material == Material.NAME_TAG) {
+				return true;
+			}
+			break;
+		case "food":
+			switch (material) {
+			case APPLE:
+			case MUSHROOM_STEW:
+			case BREAD:
+			case PORKCHOP:
+			case COOKED_PORKCHOP:
+			case GOLDEN_APPLE:
+			case ENCHANTED_GOLDEN_APPLE:
+			case COD:
+			case SALMON:
+			case TROPICAL_FISH:
+			case PUFFERFISH:
+			case COOKED_COD:
+			case COOKED_SALMON:
+			case CAKE:
+			case COOKIE:
+			case MELON_SLICE:
+			case DRIED_KELP:
+			case BEEF:
+			case COOKED_BEEF:
+			case CHICKEN:
+			case COOKED_CHICKEN:
+			case ROTTEN_FLESH:
+			case SPIDER_EYE:
+			case CARROT:
+			case POTATO:
+			case BAKED_POTATO:
+			case POISONOUS_POTATO:
+			case PUMPKIN_PIE:
+			case RABBIT:
+			case COOKED_RABBIT:
+			case RABBIT_STEW:
+			case MUTTON:
+			case COOKED_MUTTON:
+			case BEETROOT:
+			case BEETROOT_SOUP:
+			case SWEET_BERRIES:
+			case HONEY_BOTTLE:
+				return true;
+			default:
+				break;
+			}
+			break;
+		default:
+			return false;
+		}
+
+		return false;
 	}
 
 	private void openListOfItemsMenu(Player player, String letter) {
@@ -481,6 +1169,8 @@ public class Bank implements Listener {
 	private void depositToAccount(InventoryClickEvent event, Player player, ACCOUNT account) {
 		ItemStack[] items = event.getInventory().getContents();
 
+		int numberOfItemsDeposited = 0;
+
 		for (int itemNum = 0; itemNum < 45; itemNum++) {
 			if (isValidItem(items[itemNum])) {
 				if (account == ACCOUNT.GLOBAL) {
@@ -490,11 +1180,14 @@ public class Bank implements Listener {
 					depositItems(items[itemNum], player.getUniqueId());
 				}
 
+				numberOfItemsDeposited += items[itemNum].getAmount();
 				items[itemNum] = null;
 			}
 		}
 		event.getInventory().setContents(items);
-		player.sendMessage("Items deposited");
+		if (numberOfItemsDeposited > 0) {
+			player.sendMessage(numberOfItemsDeposited + " Items deposited");
+		}
 		bankItemsData.saveBankData();
 	}
 
@@ -535,6 +1228,7 @@ public class Bank implements Listener {
 		case ENCHANTED_BOOK:
 		case TIPPED_ARROW:
 		case PLAYER_HEAD:
+		case FILLED_MAP:
 			return false;
 		default:
 			break;

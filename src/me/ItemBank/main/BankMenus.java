@@ -13,11 +13,12 @@ public class BankMenus {
 	DepositOrWithdrawMenu depositOrWithdrawMenu;
 	DepositMenu depositMenu;
 	WithdrawMenu withdrawMenu;
+	WithdrawMenuCategories withdrawMenuCategoriesMenu;
 	ListOfItemsMenu listOfItemsMenu;
 	AmountMenu amountMenu;
 
 	enum BANKMENU {
-		BANKMAIN, DEPOSITORWHITDRAW, DEPOSIT, WITHDRAW, LISTOFITEMS, AMOUNT, NONE
+		BANKMAIN, DEPOSITORWHITDRAW, DEPOSIT, WITHDRAW, WITHDRAWCATEGORIES, LISTOFITEMS, AMOUNT, NONE
 	}
 
 	public BankMenus(ItemBank plugin) {
@@ -27,6 +28,7 @@ public class BankMenus {
 		depositOrWithdrawMenu = new DepositOrWithdrawMenu(plugin, "Deposit or Withdraw");
 		depositMenu = new DepositMenu(plugin, "Deposit Menu");
 		withdrawMenu = new WithdrawMenu(plugin, "Withdraw");
+		withdrawMenuCategoriesMenu = new WithdrawMenuCategories(plugin, "Withdraw (Categories)");
 		listOfItemsMenu = new ListOfItemsMenu(plugin, "List of Items");
 		amountMenu = new AmountMenu(plugin, "Amount Menu");
 	}
@@ -36,6 +38,7 @@ public class BankMenus {
 		depositOrWithdrawMenu.setup();
 		depositMenu.setup();
 		withdrawMenu.setup();
+		withdrawMenuCategoriesMenu.setup();
 		listOfItemsMenu.setup();
 		amountMenu.setup();
 	}

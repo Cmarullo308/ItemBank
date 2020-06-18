@@ -1,5 +1,7 @@
 package me.ItemBank.main;
 
+import java.text.DecimalFormat;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -59,44 +61,59 @@ public class ListOfItemsMenu {
 	}
 
 	public void openMenuFor(Player player, int page) {
-		inventory = Bukkit.createInventory(player, 54, menuName);
-		int firstSlot = (page - 1) * 45;
-		int lastSlot = firstSlot + 44;
-
 		Session session = plugin.bank.sessions.get(player);
-		int amountOfItems = session.items.size();
-		int count = firstSlot;
-		int slotToSet = 0;
+		DecimalFormat decimalFormat = plugin.decimalFormat;
+		inventory = Bukkit.createInventory(player, 54, menuName);
 
-		for (int i = firstSlot; i <= lastSlot; i++) {
+		int listSlotNum = (page - 1) * 45;
 
-			if (count < amountOfItems && session.items.get(count) != null) {
-				ItemStack item = new ItemStack(session.items.get(i));
+		for (int guiSlot = 0; guiSlot < 45; guiSlot++) {
+			if (listSlotNum < session.items.size() && session.items.get(listSlotNum) != null) {
+				ItemStack item = new ItemStack(session.items.get(listSlotNum));
 				ItemMeta meta = item.getItemMeta();
 				meta.setDisplayName(capitalizeWord(item.getType().name().replace("_", " ").toLowerCase()) + " ("
-						+ session.amounts.get(i) + ")");
+						+ decimalFormat.format(session.amounts.get(listSlotNum)) + ")");
 				item.setItemMeta(meta);
 
-				menuButtons[slotToSet] = item;
+				menuButtons[guiSlot] = item;
 			} else {
-				menuButtons[slotToSet] = null;
+				menuButtons[guiSlot] = null;
 			}
-
-			slotToSet++;
-			count++;
+			
+			listSlotNum++;
 		}
+
+		ItemMeta meta;
 
 		if (page == 1) {
 			menuButtons[47] = backgroundIcon.clone();
+
+			meta = nextPageButtonIcon.getItemMeta();
+			meta.setDisplayName(
+					ChatColor.GOLD + "Next Page (" + session.getPageNum() + " / " + session.getNumOfPages() + ")");
+			nextPageButtonIcon.setItemMeta(meta);
 			menuButtons[51] = nextPageButtonIcon.clone();
 		} else if (page == session.numOfPages) {
+			meta = previousPageButtonIcon.getItemMeta();
+			meta.setDisplayName(
+					ChatColor.GOLD + "Previous Page (" + session.getPageNum() + " / " + session.getNumOfPages() + ")");
+			previousPageButtonIcon.setItemMeta(meta);
 			menuButtons[47] = previousPageButtonIcon.clone();
 		} else {
+			meta = previousPageButtonIcon.getItemMeta();
+			meta.setDisplayName(
+					ChatColor.GOLD + "Previous Page (" + session.getPageNum() + " / " + session.getNumOfPages() + ")");
+			previousPageButtonIcon.setItemMeta(meta);
 			menuButtons[47] = previousPageButtonIcon.clone();
+
+			meta = nextPageButtonIcon.getItemMeta();
+			meta.setDisplayName(
+					ChatColor.GOLD + "Next Page (" + session.getPageNum() + " / " + session.getNumOfPages() + ")");
+			nextPageButtonIcon.setItemMeta(meta);
 			menuButtons[51] = nextPageButtonIcon.clone();
 		}
 
-		if (lastSlot >= session.items.size()) {
+		if (((page - 1) * 45) + 44 >= session.items.size()) {
 			menuButtons[51] = backgroundIcon.clone();
 		}
 

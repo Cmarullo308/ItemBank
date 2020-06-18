@@ -9,7 +9,7 @@ public class Session {
 
 //	private Player player;
 	private ACCOUNT account;
-	// ListOfItems page (Withdraw
+	// ListOfItems page (Withdraw)
 	private int pageNum;
 	ArrayList<Material> items;
 	ArrayList<Integer> amounts;
@@ -18,9 +18,27 @@ public class Session {
 	private int maxAmount;
 	private int amountSelected;
 	private Material materialSelected;
+	private String category;
+	private boolean cameFromCategories;
 
 	public Session() {
-		
+		cameFromCategories = false;
+	}
+
+	public boolean cameFromCategories() {
+		return cameFromCategories;
+	}
+
+	public void setCameFromCategories(boolean cameFromCategories) {
+		this.cameFromCategories = cameFromCategories;
+	}
+
+	public String getCategory() {
+		return category;
+	}
+
+	public void setCategory(String category) {
+		this.category = category;
 	}
 
 	public ACCOUNT getAccount() {
@@ -77,7 +95,13 @@ public class Session {
 		this.currentMenu = currentMenu;
 	}
 
+	public int getNumOfPages() {
+		return numOfPages;
+	}
 
+	public void setNumOfPages(int numOfPages) {
+		this.numOfPages = numOfPages;
+	}
 
 	enum ACCOUNT {
 		GLOBAL, PRIVATE

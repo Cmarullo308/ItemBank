@@ -1,5 +1,6 @@
 package me.ItemBank.main;
 
+import java.text.DecimalFormat;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.bukkit.Bukkit;
@@ -20,9 +21,11 @@ public class AmountMenu {
 	ItemStack[] menuButtons;
 	ItemStack minus1ButtonIcon;
 	ItemStack minus10ButtonIcon;
+	ItemStack minus64ButtonIcon;
 	ItemStack resetTo0ButtonIcon;
 	ItemStack add1ButtonIcon;
 	ItemStack add10ButtonIcon;
+	ItemStack add64ButtonIcon;
 	ItemStack backButtonIcon;
 	ItemStack exitButtonIcon;
 	ItemStack withdrawButtonIcon;
@@ -38,9 +41,11 @@ public class AmountMenu {
 
 		minus1ButtonIcon = bankMenus.makeButton(Material.GLOWSTONE_DUST, ChatColor.RED + "-1");
 		minus10ButtonIcon = bankMenus.makeButton(Material.GLOWSTONE_DUST, ChatColor.RED + "-10");
+		minus64ButtonIcon = bankMenus.makeButton(Material.GLOWSTONE_DUST, ChatColor.RED + "-64");
 		resetTo0ButtonIcon = bankMenus.makeButton(Material.WHITE_STAINED_GLASS_PANE, "Reset to 0");
 		add1ButtonIcon = bankMenus.makeButton(Material.REDSTONE, ChatColor.RED + "+1");
 		add10ButtonIcon = bankMenus.makeButton(Material.REDSTONE, ChatColor.RED + "+10");
+		add64ButtonIcon = bankMenus.makeButton(Material.REDSTONE, ChatColor.RED + "+64");
 		backButtonIcon = bankMenus.makeButton(Material.RED_STAINED_GLASS_PANE, ChatColor.RED + "Back");
 		exitButtonIcon = bankMenus.makeButton(Material.BARRIER, ChatColor.RED + "Exit");
 		withdrawButtonIcon = bankMenus.makeButton(Material.LIME_STAINED_GLASS_PANE, "Withdraw");
@@ -50,6 +55,9 @@ public class AmountMenu {
 		for (int slotNum = 0; slotNum < 27; slotNum++) {
 			switch (slotNum) {
 			case 4:
+				break;
+			case 10:
+				menuButtons[slotNum] = minus64ButtonIcon.clone();
 				break;
 			case 11:
 				menuButtons[slotNum] = minus10ButtonIcon.clone();
@@ -65,6 +73,9 @@ public class AmountMenu {
 				break;
 			case 15:
 				menuButtons[slotNum] = add10ButtonIcon.clone();
+				break;
+			case 16:
+				menuButtons[slotNum] = add64ButtonIcon.clone();
 				break;
 			case 18:
 				menuButtons[slotNum] = backButtonIcon.clone();
@@ -84,6 +95,8 @@ public class AmountMenu {
 
 	public void openMenuFor(Player player, Material material) {
 		ConcurrentHashMap<Material, BankItem> bankItemData = plugin.bank.bankItemsData.bankItemData;
+		
+        DecimalFormat decimalFormat = plugin.decimalFormat;
 
 		inventory = Bukkit.createInventory(player, 27, menuName);
 		menuButtons[4] = new ItemStack(material);
@@ -110,40 +123,54 @@ public class AmountMenu {
 
 		ItemMeta meta;
 
-		// Minus 10
-		menuButtons[11] = new ItemStack(Material.GLOWSTONE_DUST);
-		meta = menuButtons[11].getItemMeta();
-		meta.setDisplayName(ChatColor.RED + "-10 " + ChatColor.WHITE + "(" + session.getAmountSelected() + " / "
-				+ session.getMaxAmount() + ")");
-		menuButtons[11].setItemMeta(meta);
-
 		// Minus 1
 		menuButtons[12] = new ItemStack(Material.GLOWSTONE_DUST);
 		meta = menuButtons[12].getItemMeta();
 		meta.setDisplayName(ChatColor.RED + "-1 " + ChatColor.WHITE + "(" + session.getAmountSelected() + " / "
-				+ session.getMaxAmount() + ")");
+				+ decimalFormat.format(session.getMaxAmount()) + ")");
 		menuButtons[12].setItemMeta(meta);
+
+		// Minus 10
+		menuButtons[11] = new ItemStack(Material.GLOWSTONE_DUST);
+		meta = menuButtons[11].getItemMeta();
+		meta.setDisplayName(ChatColor.RED + "-10 " + ChatColor.WHITE + "(" + session.getAmountSelected() + " / "
+				+ decimalFormat.format(session.getMaxAmount()) + ")");
+		menuButtons[11].setItemMeta(meta);
+
+		// Minus 64
+		menuButtons[10] = new ItemStack(Material.GLOWSTONE_DUST);
+		meta = menuButtons[10].getItemMeta();
+		meta.setDisplayName(ChatColor.RED + "-64 " + ChatColor.WHITE + "(" + session.getAmountSelected() + " / "
+				+ decimalFormat.format(session.getMaxAmount()) + ")");
+		menuButtons[10].setItemMeta(meta);
 
 		// Reset to 0
 		menuButtons[13] = new ItemStack(Material.WHITE_STAINED_GLASS_PANE);
 		meta = menuButtons[13].getItemMeta();
 		meta.setDisplayName(ChatColor.YELLOW + "Reset to 0 " + ChatColor.WHITE + "(" + session.getAmountSelected()
-				+ " / " + session.getMaxAmount() + ")");
+				+ " / " + decimalFormat.format(session.getMaxAmount()) + ")");
 		menuButtons[13].setItemMeta(meta);
 
 		// Add 1
 		menuButtons[14] = new ItemStack(Material.REDSTONE);
 		meta = menuButtons[14].getItemMeta();
 		meta.setDisplayName(ChatColor.GREEN + "+1 " + ChatColor.WHITE + "(" + session.getAmountSelected() + " / "
-				+ session.getMaxAmount() + ")");
+				+ decimalFormat.format(session.getMaxAmount()) + ")");
 		menuButtons[14].setItemMeta(meta);
 
-		// Add 1
+		// Add 10
 		menuButtons[15] = new ItemStack(Material.REDSTONE);
 		meta = menuButtons[15].getItemMeta();
 		meta.setDisplayName(ChatColor.GREEN + "+10 " + ChatColor.WHITE + "(" + session.getAmountSelected() + " / "
-				+ session.getMaxAmount() + ")");
+				+ decimalFormat.format(session.getMaxAmount()) + ")");
 		menuButtons[15].setItemMeta(meta);
+
+		// Add 64
+		menuButtons[16] = new ItemStack(Material.REDSTONE);
+		meta = menuButtons[16].getItemMeta();
+		meta.setDisplayName(ChatColor.GREEN + "+64 " + ChatColor.WHITE + "(" + session.getAmountSelected() + " / "
+				+ decimalFormat.format(session.getMaxAmount()) + ")");
+		menuButtons[16].setItemMeta(meta);
 
 		menuButtons[26] = new ItemStack(Material.LIME_STAINED_GLASS_PANE);
 		meta = menuButtons[26].getItemMeta();
