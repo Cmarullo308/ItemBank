@@ -90,6 +90,8 @@ public class WithdrawMenuCategories {
 		addCategory(Material.OAK_FENCE, "Fences");
 		addCategory(Material.OAK_SIGN, "Signs");
 		addCategory(Material.DIAMOND, "Mined");
+		addCategory(Material.TORCH, "Light");
+		addCategory(Material.CREEPER_SPAWN_EGG, "Spawn Eggs");
 
 		sortCategories(0, categories.size() - 1);
 	}

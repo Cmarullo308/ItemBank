@@ -475,6 +475,10 @@ public class Bank implements Listener {
 				return true;
 			} else if (material.toString().endsWith("PLANKS")) {
 				return true;
+			} else if(material.toString().endsWith("HYPHAE")) {
+				return true;
+			} else if(material.toString().endsWith("STEM") && !material.equals(Material.MUSHROOM_STEM)) {
+				return true;
 			}
 
 			break;
@@ -565,6 +569,9 @@ public class Bank implements Listener {
 			case LAPIS_LAZULI:
 			case QUARTZ:
 			case QUARTZ_BLOCK:
+			case NETHERITE_BLOCK:
+			case NETHERITE_INGOT:
+			case NETHERITE_SCRAP:
 				return true;
 			default:
 				break;
@@ -598,6 +605,10 @@ public class Bank implements Listener {
 			case GOLDEN_HORSE_ARMOR:
 			case DIAMOND_HORSE_ARMOR:
 			case LEATHER_HORSE_ARMOR:
+			case NETHERITE_HELMET:
+			case NETHERITE_CHESTPLATE:
+			case NETHERITE_LEGGINGS:
+			case NETHERITE_BOOTS:
 				return true;
 			default:
 				break;
@@ -817,6 +828,13 @@ public class Bank implements Listener {
 			case DEAD_BUBBLE_CORAL_FAN:
 			case DEAD_FIRE_CORAL_FAN:
 			case DEAD_HORN_CORAL_FAN:
+			case CRIMSON_ROOTS:
+			case POTTED_CRIMSON_ROOTS:
+			case POTTED_WARPED_ROOTS:
+			case WARPED_ROOTS:
+			case NETHER_SPROUTS:
+			case TWISTING_VINES:
+			case TWISTING_VINES_PLANT:
 				return true;
 			default:
 				break;
@@ -879,6 +897,11 @@ public class Bank implements Listener {
 			case ANDESITE_SLAB:
 			case POLISHED_ANDESITE_SLAB:
 			case DIORITE_SLAB:
+			case BASALT:
+			case POLISHED_BASALT:
+			case GILDED_BLACKSTONE:
+			case LODESTONE:
+			case CRYING_OBSIDIAN:
 				return true;
 			default:
 				break;
@@ -920,6 +943,8 @@ public class Bank implements Listener {
 			case REDSTONE_ORE:
 			case EMERALD_ORE:
 			case NETHER_QUARTZ_ORE:
+			case ANCIENT_DEBRIS:
+			case NETHER_GOLD_ORE:
 				return true;
 			default:
 				break;
@@ -961,6 +986,8 @@ public class Bank implements Listener {
 			} else if (material == Material.LEAD) {
 				return true;
 			} else if (material == Material.NAME_TAG) {
+				return true;
+			} else if(material == Material.WARPED_FUNGUS_ON_A_STICK) {
 				return true;
 			}
 			break;
@@ -1006,6 +1033,48 @@ public class Bank implements Listener {
 				return true;
 			default:
 				break;
+			}
+			break;
+		case "light":
+			switch (material) {
+			case BEACON:
+			case END_GATEWAY:
+			case END_PORTAL:
+			case FIRE:
+			case LAVA:
+			case GLOWSTONE:
+			case JACK_O_LANTERN:
+			case REDSTONE_LAMP:
+			case SEA_LANTERN:
+			case SEA_PICKLE:
+			case SHROOMLIGHT:
+			case CONDUIT:
+			case LANTERN:
+			case CAMPFIRE:
+			case END_ROD:
+			case TORCH:
+			case NETHER_PORTAL:
+			case CRYING_OBSIDIAN:
+			case SOUL_FIRE:
+			case SOUL_LANTERN:
+			case SOUL_TORCH:
+			case SOUL_CAMPFIRE:
+			case ENDER_CHEST:
+			case REDSTONE_TORCH:
+			case MAGMA_BLOCK:
+			case BREWING_STAND:
+			case BROWN_MUSHROOM:
+			case DRAGON_EGG:
+			case END_PORTAL_FRAME:
+			case RESPAWN_ANCHOR:
+				return true;
+			default:
+				break;
+			}
+			break;
+		case "spawn eggs":
+			if(material.toString().endsWith("SPAWN_EGG")) {
+				return true;
 			}
 			break;
 		default:
