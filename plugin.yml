@@ -1,7 +1,7 @@
 main: me.ItemBank.main.ItemBank
 name: ItemBank
 author: CJM
-version: 1.0
+version: 1.0.1
 api-version: 1.16
 description: Item bank
 commands:

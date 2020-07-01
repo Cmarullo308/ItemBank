@@ -283,7 +283,8 @@ public class Bank implements Listener {
 		}
 	}
 
-	// Prevents the amount menu from opening up for people not currently using the bank
+	// Prevents the amount menu from opening up for people not currently using the
+	// bank
 	private boolean playerInSameMenu(Player player, Material material) {
 		ItemStack[] invItems = player.getOpenInventory().getTopInventory().getContents();
 
@@ -475,9 +476,9 @@ public class Bank implements Listener {
 				return true;
 			} else if (material.toString().endsWith("PLANKS")) {
 				return true;
-			} else if(material.toString().endsWith("HYPHAE")) {
+			} else if (material.toString().endsWith("HYPHAE")) {
 				return true;
-			} else if(material.toString().endsWith("STEM") && !material.equals(Material.MUSHROOM_STEM)) {
+			} else if (material.toString().endsWith("STEM") && !material.equals(Material.MUSHROOM_STEM)) {
 				return true;
 			}
 
@@ -987,7 +988,7 @@ public class Bank implements Listener {
 				return true;
 			} else if (material == Material.NAME_TAG) {
 				return true;
-			} else if(material == Material.WARPED_FUNGUS_ON_A_STICK) {
+			} else if (material == Material.WARPED_FUNGUS_ON_A_STICK) {
 				return true;
 			}
 			break;
@@ -1073,7 +1074,7 @@ public class Bank implements Listener {
 			}
 			break;
 		case "spawn eggs":
-			if(material.toString().endsWith("SPAWN_EGG")) {
+			if (material.toString().endsWith("SPAWN_EGG")) {
 				return true;
 			}
 			break;
@@ -1317,6 +1318,12 @@ public class Bank implements Listener {
 		}
 
 		if (isBannerWithPattern(itemStack)) {
+			return false;
+		}
+
+		//Lodestone Compass
+		if (itemStack.getType() == Material.COMPASS
+				&& itemStack.getItemMeta().toString().contains("internal=")) {
 			return false;
 		}
 
