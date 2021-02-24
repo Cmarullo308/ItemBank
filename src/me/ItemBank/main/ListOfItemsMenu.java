@@ -60,7 +60,7 @@ public class ListOfItemsMenu {
 		}
 	}
 
-	public void openMenuFor(Player player, int page) {		
+	public void openMenuFor(Player player, int page) {
 		Session session = plugin.bank.sessions.get(player);
 		DecimalFormat decimalFormat = plugin.decimalFormat;
 		inventory = Bukkit.createInventory(player, 54, menuName);
@@ -79,7 +79,7 @@ public class ListOfItemsMenu {
 			} else {
 				menuButtons[guiSlot] = null;
 			}
-			
+
 			listSlotNum++;
 		}
 

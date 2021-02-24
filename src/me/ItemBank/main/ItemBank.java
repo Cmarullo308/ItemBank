@@ -10,7 +10,7 @@ public class ItemBank extends JavaPlugin {
 	Bank bank;
 
 	String helpMessage;
-	
+
 	DecimalFormat decimalFormat;
 
 	CommandHandler commandHandler = new CommandHandler(this);
@@ -40,10 +40,10 @@ public class ItemBank extends JavaPlugin {
 		this.getServer().getPluginManager().registerEvents(bank, this);
 
 		helpMessage = createHelpMessage();
-		
+
 		decimalFormat = new DecimalFormat("#.##");
-        decimalFormat.setGroupingUsed(true);
-        decimalFormat.setGroupingSize(3);
+		decimalFormat.setGroupingUsed(true);
+		decimalFormat.setGroupingSize(3);
 
 		consoleMessage("ItemBank loaded");
 	}

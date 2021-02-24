@@ -270,7 +270,7 @@ public class Bank implements Listener {
 			session.setAmountSelected(0);
 			if (session.getAccount() == ACCOUNT.GLOBAL) {
 				updateForOtherPlayersInAmountMenu(player, session.getMaterialSelected());
-				updateItemListForOtherPlayers(amountSelected, session.getMaterialSelected());
+				updateItemListForOtherPlayers(player, amountSelected, session.getMaterialSelected());
 			}
 			bankMenus.amountMenu.openMenuFor(player, session.getMaterialSelected());
 			break;
@@ -279,8 +279,11 @@ public class Bank implements Listener {
 		}
 	}
 
-	private void updateItemListForOtherPlayers(int amountSelected, Material selectedMaterial) {
+	private void updateItemListForOtherPlayers(Player originalPlayer, int amountSelected, Material selectedMaterial) {
 		for (Player playerInServer : Bukkit.getOnlinePlayers()) {
+			if(playerInServer.equals(originalPlayer)) {
+				continue;
+			}
 			if (sessions.get(playerInServer) != null) {
 				Session playerInServerSession = sessions.get(playerInServer);
 				if (playerInServerSession.getAccount() == ACCOUNT.GLOBAL) {

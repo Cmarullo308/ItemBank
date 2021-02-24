@@ -42,16 +42,16 @@ public class CommandHandler {
 	}
 
 	private void openBankForPlayer(CommandSender sender, String[] args) {
-		if(!(sender instanceof Player)) {
+		if (!(sender instanceof Player)) {
 			sender.sendMessage(mustBeAPlayerMessage());
 			return;
 		}
-		
-		if (!sender.hasPermission("itembank.openbank")) {
+
+		if (!sender.hasPermission("itembank.openbank") && !sender.isOp()) {
 			noPermission(sender);
 			return;
 		}
-		
+
 		plugin.bank.openBank((Player) sender);
 	}
 
@@ -64,8 +64,8 @@ public class CommandHandler {
 			sender.sendMessage(mustBeAPlayerMessage());
 			return;
 		}
-		
-		if (!sender.hasPermission("itembank.createbank")) {
+
+		if (!sender.hasPermission("itembank.createbank") && !sender.isOp()) {
 			noPermission(sender);
 			return;
 		}

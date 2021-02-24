@@ -186,7 +186,7 @@ public class WithdrawMenu {
 		}
 	}
 
-	public void openMenuFor(Player player) {		
+	public void openMenuFor(Player player) {
 		inventory = Bukkit.createInventory(player, 45, this.menuName);
 		inventory.setContents(menuButtons);
 

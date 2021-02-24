@@ -59,7 +59,7 @@ public class BankItemsData {
 			try {
 				UUIDs = bankFileConfig.getConfigurationSection("Items." + materialName).getKeys(false);
 			} catch (java.lang.NullPointerException e) {
-				
+
 			}
 
 			if (UUIDs != null) {

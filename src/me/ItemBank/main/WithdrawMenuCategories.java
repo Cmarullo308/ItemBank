@@ -57,7 +57,7 @@ public class WithdrawMenuCategories {
 				menuButtons[slotNum] = backgroundIcon.clone();
 			}
 		}
-		
+
 		// --Setup categories
 		categories = new ArrayList<ItemStack>();
 
