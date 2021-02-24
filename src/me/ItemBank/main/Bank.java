@@ -62,12 +62,16 @@ public class Bank implements Listener {
 			if (isSign(e.getClickedBlock().getType())) {
 				Sign sign = (Sign) block.getState();
 				if (isBankSign(sign)) {
-					sessions.put(player, new Session());
-					sessions.get(player).setCurrentMenu(BANKMENU.BANKMAIN);
-					bankMenus.bankManinMenu.openMenuFor(player);
+					openBank(player);
 				}
 			}
 		}
+	}
+
+	public void openBank(Player player) {
+		sessions.put(player, new Session());
+		sessions.get(player).setCurrentMenu(BANKMENU.BANKMAIN);
+		bankMenus.bankManinMenu.openMenuFor(player);
 	}
 
 	private boolean isBankSign(Sign sign) {
@@ -190,7 +194,6 @@ public class Bank implements Listener {
 	private void withdrawMenuCategoriesMenuClicked(InventoryClickEvent event, Player player) {
 		int slotClicked = event.getRawSlot();
 		Session session = sessions.get(player);
-
 		ItemStack[] eventContents = event.getInventory().getContents();
 
 		if (slotClicked == 4) {
@@ -257,14 +260,51 @@ public class Bank implements Listener {
 			break;
 		case 26:
 			withdrawItemsToPlayer(player);
+
+			int amountSelected = session.getAmountSelected();
+
+			// Item amount updates after withdraw without having to reload the menu
+			session.amounts.set(session.items.indexOf(session.getMaterialSelected()),
+					session.getMaxAmount() - amountSelected);
+
 			session.setAmountSelected(0);
 			if (session.getAccount() == ACCOUNT.GLOBAL) {
 				updateForOtherPlayersInAmountMenu(player, session.getMaterialSelected());
+				updateItemListForOtherPlayers(amountSelected, session.getMaterialSelected());
 			}
 			bankMenus.amountMenu.openMenuFor(player, session.getMaterialSelected());
 			break;
 		default:
 			break;
+		}
+	}
+
+	private void updateItemListForOtherPlayers(int amountSelected, Material selectedMaterial) {
+		for (Player playerInServer : Bukkit.getOnlinePlayers()) {
+			if (sessions.get(playerInServer) != null) {
+				Session playerInServerSession = sessions.get(playerInServer);
+				if (playerInServerSession.getAccount() == ACCOUNT.GLOBAL) {
+					if (playerInServerSession.amounts != null) {
+						if (playerInServerSession.items.contains(selectedMaterial)) {
+							int indexOfMaterial = playerInServerSession.items.indexOf(selectedMaterial);
+							playerInServerSession.amounts.set(indexOfMaterial,
+									playerInServerSession.amounts.get(indexOfMaterial) - amountSelected);
+							reloadListOfItemsMenuForPlayersInMenu(playerInServer, playerInServerSession);
+						}
+					}
+				}
+			}
+		}
+	}
+
+	private void reloadListOfItemsMenuForPlayersInMenu(Player playerInServer, Session playerInServerSession) {
+		if (playerInServerSession.getCurrentMenu() == BANKMENU.LISTOFITEMS) {
+			ItemStack[] invItems = playerInServer.getOpenInventory().getTopInventory().getContents();
+			if (invItems.length > 9 && invItems[49].getType() == Material.BARRIER) {
+				if (invItems[49].getItemMeta().getDisplayName().equals(ChatColor.RED + "Exit")) {
+					bankMenus.listOfItemsMenu.openMenuFor(playerInServer, playerInServerSession.getPageNum());
+				}
+			}
 		}
 	}
 
@@ -410,8 +450,8 @@ public class Bank implements Listener {
 			session.setPageNum(1);
 			session.setCurrentMenu(BANKMENU.WITHDRAWCATEGORIES);
 		} else if (slotClicked >= 9 && slotClicked <= 35) {
-			openListOfItemsMenu(player, event.getInventory().getContents()[slotClicked].getItemMeta().getDisplayName());
 			session.setCurrentMenu(BANKMENU.LISTOFITEMS);
+			openListOfItemsMenu(player, event.getInventory().getContents()[slotClicked].getItemMeta().getDisplayName());
 		} else if (slotClicked == 36) {
 			bankMenus.depositOrWithdrawMenu.openMenuFor(player);
 			session.setCurrentMenu(BANKMENU.DEPOSITORWHITDRAW);
@@ -435,6 +475,7 @@ public class Bank implements Listener {
 		Session session = sessions.get(player);
 		session.items = new ArrayList<Material>();
 		session.amounts = new ArrayList<Integer>();
+		session.setCurrentMenu(BANKMENU.LISTOFITEMS);
 
 		UUID uuid;
 
@@ -463,6 +504,8 @@ public class Bank implements Listener {
 	}
 
 	private boolean isInSelectedCategory(Material material, String category) {
+		// Make sure case is lowercase and item name is all CAPS
+
 		switch (category.toLowerCase()) {
 		case "wool":
 			if (material.toString().endsWith("WOOL")) {
@@ -1078,6 +1121,21 @@ public class Bank implements Listener {
 				return true;
 			}
 			break;
+		case "shulker boxes":
+			if (material.toString().endsWith("SHULKER_BOX")) {
+				return true;
+			}
+			break;
+		case "beds":
+			if (material.toString().endsWith("_bed")) {
+				return true;
+			}
+			break;
+		case "glass":
+			if (material.toString().endsWith("GLASS") || material.toString().endsWith("PANE")) {
+				return true;
+			}
+			break;
 		default:
 			return false;
 		}
@@ -1086,7 +1144,6 @@ public class Bank implements Listener {
 	}
 
 	private void openListOfItemsMenu(Player player, String letter) {
-
 		// All lettered items
 		ArrayList<Material> items = new ArrayList<Material>();
 		// Get all materials in bank
@@ -1246,6 +1303,7 @@ public class Bank implements Listener {
 				if (account == ACCOUNT.GLOBAL) {
 					depositItems(items[itemNum], globalUUID);
 					updateForOtherPlayersInAmountMenu(player, items[itemNum].getType());
+					updateListOfItemsForOtherPlayersAfterDeposit(items[itemNum], !anyItemStacksLeft(itemNum, items));
 				} else {
 					depositItems(items[itemNum], player.getUniqueId());
 				}
@@ -1259,6 +1317,37 @@ public class Bank implements Listener {
 			player.sendMessage(numberOfItemsDeposited + " Items deposited");
 		}
 		bankItemsData.saveBankData();
+	}
+
+	private boolean anyItemStacksLeft(int itemNum, ItemStack[] items) {
+		for(int i = 44; i > 0; i--) {
+			if(items[i] != null && i > itemNum) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
+
+	private void updateListOfItemsForOtherPlayersAfterDeposit(ItemStack itemStack, boolean readyToReload) {
+		for (Player playerInServer : Bukkit.getOnlinePlayers()) {
+			if (sessions.get(playerInServer) != null) {
+				Session playerInServerSession = sessions.get(playerInServer);
+				if (playerInServerSession.getAccount() == ACCOUNT.GLOBAL) {
+					if (playerInServerSession.amounts != null) {
+						if (playerInServerSession.items.contains(itemStack.getType())) {
+							int indexOfMaterial = playerInServerSession.items.indexOf(itemStack.getType());
+							playerInServerSession.amounts.set(indexOfMaterial,
+									playerInServerSession.amounts.get(indexOfMaterial) + itemStack.getAmount());
+							if (readyToReload) {
+								
+								reloadListOfItemsMenuForPlayersInMenu(playerInServer, playerInServerSession);
+							}
+						}
+					}
+				}
+			}
+		}
 	}
 
 	private void depositItems(ItemStack items, UUID playerID) {
@@ -1321,9 +1410,8 @@ public class Bank implements Listener {
 			return false;
 		}
 
-		//Lodestone Compass
-		if (itemStack.getType() == Material.COMPASS
-				&& itemStack.getItemMeta().toString().contains("internal=")) {
+		// Lodestone Compass
+		if (itemStack.getType() == Material.COMPASS && itemStack.getItemMeta().toString().contains("internal=")) {
 			return false;
 		}
 
@@ -1428,7 +1516,6 @@ public class Bank implements Listener {
 			sign.setLine(2, ChatColor.BLACK + "Right click to use");
 			sign.setLine(3, magicLine);
 			sign.update();
-			player.sendMessage("ee");
 		}
 	}
 }

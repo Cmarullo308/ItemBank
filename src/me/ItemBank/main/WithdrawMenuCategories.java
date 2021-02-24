@@ -1,8 +1,6 @@
 package me.ItemBank.main;
 
 import java.util.ArrayList;
-import java.util.Collections;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -59,7 +57,7 @@ public class WithdrawMenuCategories {
 				menuButtons[slotNum] = backgroundIcon.clone();
 			}
 		}
-
+		
 		// --Setup categories
 		categories = new ArrayList<ItemStack>();
 
@@ -92,6 +90,9 @@ public class WithdrawMenuCategories {
 		addCategory(Material.DIAMOND, "Mined");
 		addCategory(Material.TORCH, "Light");
 		addCategory(Material.CREEPER_SPAWN_EGG, "Spawn Eggs");
+		addCategory(Material.SHULKER_BOX, "Shulker Boxes");
+		addCategory(Material.RED_BED, "Beds");
+		addCategory(Material.GLASS, "Glass");
 
 		sortCategories(0, categories.size() - 1);
 	}

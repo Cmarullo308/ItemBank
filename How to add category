@@ -1,0 +1,3 @@
+Do addCategory(Material, "Name") in WithdrawMenuCategories.java 
+
+In isInSelectedCategory() in Bank.java make sure case is lowercase and item name is all CAPS

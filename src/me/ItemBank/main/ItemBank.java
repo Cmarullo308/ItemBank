@@ -52,7 +52,8 @@ public class ItemBank extends JavaPlugin {
 		String message = "";
 
 		message += "Commands:\n";
-		message += "/CreateBank     (While looking at a sign)";
+		message += "/CreateBank (While looking at a sign)\n   Alias: cb\n";
+		message += "/OpenBank\n   Alias: ob";
 
 		return message;
 	}

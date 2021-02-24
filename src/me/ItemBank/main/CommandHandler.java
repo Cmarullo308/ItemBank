@@ -23,6 +23,9 @@ public class CommandHandler {
 		case "createbank":
 			createBank(sender, args);
 			break;
+		case "openbank":
+			openBankForPlayer(sender, args);
+			break;
 		case "help":
 			if (args.length == 1 && args[0].equalsIgnoreCase("debug")) {
 				testCommand(sender, args);
@@ -38,9 +41,32 @@ public class CommandHandler {
 		return true;
 	}
 
+	private void openBankForPlayer(CommandSender sender, String[] args) {
+		if(!(sender instanceof Player)) {
+			sender.sendMessage(mustBeAPlayerMessage());
+			return;
+		}
+		
+		if (!sender.hasPermission("itembank.openbank")) {
+			noPermission(sender);
+			return;
+		}
+		
+		plugin.bank.openBank((Player) sender);
+	}
+
+	private void noPermission(CommandSender sender) {
+		sender.sendMessage(ChatColor.RED + "You do not have permission to use this command");
+	}
+
 	private void createBank(CommandSender sender, String[] args) {
 		if (!(sender instanceof Player)) {
 			sender.sendMessage(mustBeAPlayerMessage());
+			return;
+		}
+		
+		if (!sender.hasPermission("itembank.createbank")) {
+			noPermission(sender);
 			return;
 		}
 
