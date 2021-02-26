@@ -2,6 +2,7 @@ package me.ItemBank.main;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -51,6 +52,14 @@ public class Bank implements Listener {
 
 	public void setup() {
 		bankMenus.setupMenus();
+	}
+
+	public class ItemComparator implements Comparator<Material> {
+		@Override
+		public int compare(Material material1, Material material2) {
+			return material1.toString().compareTo(material2.toString());
+		}
+
 	}
 
 	@EventHandler
@@ -281,7 +290,7 @@ public class Bank implements Listener {
 
 	private void updateItemListForOtherPlayers(Player originalPlayer, int amountSelected, Material selectedMaterial) {
 		for (Player playerInServer : Bukkit.getOnlinePlayers()) {
-			if(playerInServer.equals(originalPlayer)) {
+			if (playerInServer.equals(originalPlayer)) {
 				continue;
 			}
 			if (sessions.get(playerInServer) != null) {
@@ -472,7 +481,7 @@ public class Bank implements Listener {
 		}
 
 		// Alphabetize items
-		Collections.sort(items);
+		Collections.sort(items, new ItemComparator());
 
 		// Extract all items that belong to player
 		Session session = sessions.get(player);
@@ -1155,7 +1164,7 @@ public class Bank implements Listener {
 		}
 
 		// Alphabetize items
-		Collections.sort(items);
+		Collections.sort(items, new ItemComparator());
 
 		// Extract all items that belong to player
 		Session session = sessions.get(player);
@@ -1323,12 +1332,12 @@ public class Bank implements Listener {
 	}
 
 	private boolean anyItemStacksLeft(int itemNum, ItemStack[] items) {
-		for(int i = 44; i > 0; i--) {
-			if(items[i] != null && i > itemNum) {
+		for (int i = 44; i > 0; i--) {
+			if (items[i] != null && i > itemNum) {
 				return true;
 			}
 		}
-		
+
 		return false;
 	}
 
@@ -1343,7 +1352,7 @@ public class Bank implements Listener {
 							playerInServerSession.amounts.set(indexOfMaterial,
 									playerInServerSession.amounts.get(indexOfMaterial) + itemStack.getAmount());
 							if (readyToReload) {
-								
+
 								reloadListOfItemsMenuForPlayersInMenu(playerInServer, playerInServerSession);
 							}
 						}
