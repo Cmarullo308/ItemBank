@@ -6,6 +6,6 @@
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="G:/User Files/CJ/Random Stuff/Minecraft/Bukkit-Spigot/1.16.5/Spigot 1.16.5.jar"/>
+	<classpathentry kind="lib" path="G:/User Files/CJ/Random Stuff/Minecraft/Bukkit-Spigot/1.17/Spigot 1.17.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

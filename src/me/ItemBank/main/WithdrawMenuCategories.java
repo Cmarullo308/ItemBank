@@ -93,6 +93,7 @@ public class WithdrawMenuCategories {
 		addCategory(Material.SHULKER_BOX, "Shulker Boxes");
 		addCategory(Material.RED_BED, "Beds");
 		addCategory(Material.GLASS, "Glass");
+		addCategory(Material.COPPER_BLOCK, "Copper");
 
 		sortCategories(0, categories.size() - 1);
 	}

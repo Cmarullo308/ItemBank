@@ -628,6 +628,7 @@ public class Bank implements Listener {
 			case NETHERITE_BLOCK:
 			case NETHERITE_INGOT:
 			case NETHERITE_SCRAP:
+			case AMETHYST_SHARD:
 				return true;
 			default:
 				break;
@@ -814,6 +815,7 @@ public class Bank implements Listener {
 			case COMPARATOR:
 			case REDSTONE:
 			case LECTERN:
+			case SCULK_SENSOR:
 				return true;
 			default:
 				break;
@@ -833,6 +835,10 @@ public class Bank implements Listener {
 			case JUNGLE_LEAVES:
 			case ACACIA_LEAVES:
 			case DARK_OAK_LEAVES:
+			case AZALEA_LEAVES:
+			case FLOWERING_AZALEA_LEAVES:
+			case AZALEA:
+			case FLOWERING_AZALEA:
 			case COBWEB:
 			case GRASS:
 			case FERN:
@@ -891,6 +897,12 @@ public class Bank implements Listener {
 			case NETHER_SPROUTS:
 			case TWISTING_VINES:
 			case TWISTING_VINES_PLANT:
+			case BIG_DRIPLEAF:
+			case SMALL_DRIPLEAF:
+			case HANGING_ROOTS:
+			case MOSS_BLOCK:
+			case MOSS_CARPET:
+			case SPORE_BLOSSOM:
 				return true;
 			default:
 				break;
@@ -958,9 +970,28 @@ public class Bank implements Listener {
 			case GILDED_BLACKSTONE:
 			case LODESTONE:
 			case CRYING_OBSIDIAN:
+			case CALCITE:
+			case DRIPSTONE_BLOCK:
+			case POINTED_DRIPSTONE:
+			case SMOOTH_BASALT:
+				// Deepslate
+			case DEEPSLATE:
+			case COBBLED_DEEPSLATE:
+			case POLISHED_DEEPSLATE:
+			case INFESTED_DEEPSLATE:
+			case DEEPSLATE_BRICKS:
+			case CRACKED_DEEPSLATE_BRICKS:
+			case DEEPSLATE_TILES:
+			case CRACKED_DEEPSLATE_TILES:
+			case CHISELED_DEEPSLATE:
 				return true;
 			default:
 				break;
+			}
+			break;
+		case "copper":
+			if (material.toString().contains("COPPER")) {
+				return true;
 			}
 			break;
 		case "slabs":
@@ -991,16 +1022,38 @@ public class Bank implements Listener {
 			break;
 		case "ores":
 			switch (material) {
+			// Gold
 			case GOLD_ORE:
-			case IRON_ORE:
-			case COAL_ORE:
-			case LAPIS_ORE:
-			case DIAMOND_ORE:
-			case REDSTONE_ORE:
-			case EMERALD_ORE:
-			case NETHER_QUARTZ_ORE:
-			case ANCIENT_DEBRIS:
+			case DEEPSLATE_GOLD_ORE:
+			case RAW_GOLD:
 			case NETHER_GOLD_ORE:
+				// Iron
+			case IRON_ORE:
+			case DEEPSLATE_IRON_ORE:
+			case RAW_IRON:
+				// Coal
+			case COAL_ORE:
+			case DEEPSLATE_COAL_ORE:
+				// Copper
+			case COPPER_ORE:
+			case DEEPSLATE_COPPER_ORE:
+			case RAW_COPPER:
+				// Lapis
+			case LAPIS_ORE:
+			case DEEPSLATE_LAPIS_ORE:
+				// Diamond
+			case DIAMOND_ORE:
+			case DEEPSLATE_DIAMOND_ORE:
+				// Redstone
+			case REDSTONE_ORE:
+			case DEEPSLATE_REDSTONE_ORE:
+				// Emerald
+			case EMERALD_ORE:
+			case DEEPSLATE_EMERALD_ORE:
+				// Netherquartz
+			case NETHER_QUARTZ_ORE:
+				// Ancient Debris
+			case ANCIENT_DEBRIS:
 				return true;
 			default:
 				break;
@@ -1027,25 +1080,42 @@ public class Bank implements Listener {
 				return true;
 			} else if (material.toString().endsWith("HOE")) {
 				return true;
-			} else if (material == Material.SHEARS) {
-				return true;
-			} else if (material == Material.FLINT_AND_STEEL) {
-				return true;
-			} else if (material == Material.COMPASS) {
-				return true;
-			} else if (material == Material.FISHING_ROD) {
-				return true;
-			} else if (material == Material.CLOCK) {
-				return true;
-			} else if (material == Material.COMPASS) {
-				return true;
-			} else if (material == Material.LEAD) {
-				return true;
-			} else if (material == Material.NAME_TAG) {
-				return true;
-			} else if (material == Material.WARPED_FUNGUS_ON_A_STICK) {
+			} else if (material.toString().contains("COMPASS")) {
 				return true;
 			}
+			switch (material) {
+			case SHEARS:
+			case FLINT_AND_STEEL:
+			case COMPASS:
+			case FISHING_ROD:
+			case CLOCK:
+			case LEAD:
+			case NAME_TAG:
+			case WARPED_FUNGUS_ON_A_STICK:
+			case SPYGLASS:
+			default:
+				break;
+			}
+
+//			else if (material == Material.SHEARS) {
+//				return true;
+//			} else if (material == Material.FLINT_AND_STEEL) {
+//				return true;
+//			} else if (material == Material.COMPASS) {
+//				return true;
+//			} else if (material == Material.FISHING_ROD) {
+//				return true;
+//			} else if (material == Material.CLOCK) {
+//				return true;
+//			} else if (material == Material.COMPASS) {
+//				return true;
+//			} else if (material == Material.LEAD) {
+//				return true;
+//			} else if (material == Material.NAME_TAG) {
+//				return true;
+//			} else if (material == Material.WARPED_FUNGUS_ON_A_STICK) {
+//				return true;
+//			}
 			break;
 		case "food":
 			switch (material) {
@@ -1086,12 +1156,16 @@ public class Bank implements Listener {
 			case BEETROOT_SOUP:
 			case SWEET_BERRIES:
 			case HONEY_BOTTLE:
+			case GLOW_BERRIES:
 				return true;
 			default:
 				break;
 			}
 			break;
 		case "light":
+			if (material.toString().endsWith("CANDLE")) {
+				return true;
+			}
 			switch (material) {
 			case BEACON:
 			case END_GATEWAY:
@@ -1123,6 +1197,9 @@ public class Bank implements Listener {
 			case DRAGON_EGG:
 			case END_PORTAL_FRAME:
 			case RESPAWN_ANCHOR:
+			case GLOW_LICHEN:
+			case LIGHT:
+			case GLOW_ITEM_FRAME:
 				return true;
 			default:
 				break;
@@ -1153,6 +1230,7 @@ public class Bank implements Listener {
 		}
 
 		return false;
+
 	}
 
 	private void openListOfItemsMenu(Player player, String letter) {
