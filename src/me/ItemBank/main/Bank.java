@@ -9,6 +9,7 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.ShulkerBox;
@@ -27,7 +28,6 @@ import org.bukkit.inventory.meta.Damageable;
 
 import me.ItemBank.main.BankMenus.BANKMENU;
 import me.ItemBank.main.Session.ACCOUNT;
-import net.md_5.bungee.api.ChatColor;
 
 public class Bank implements Listener {
 	ItemBank plugin;

@@ -1,5 +1,6 @@
 Anvil search?
 itemButtons dont need to be declared at the top?
 permissions
+OP overrides permissions
 
 save items in config as binary?

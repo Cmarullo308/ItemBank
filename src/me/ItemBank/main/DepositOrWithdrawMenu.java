@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -11,7 +12,6 @@ import org.bukkit.inventory.ItemStack;
 
 import SpigotTools.ItemStackEditor;
 import me.ItemBank.main.Session.ACCOUNT;
-import net.md_5.bungee.api.ChatColor;
 
 public class DepositOrWithdrawMenu {
 	ItemBank plugin;

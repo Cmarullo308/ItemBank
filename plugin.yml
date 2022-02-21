@@ -1,28 +1,34 @@
 main: me.ItemBank.main.ItemBank
 name: ItemBank
 author: CJM
-version: 1.2
-api-version: 1.17
+version: 1.3
+api-version: 1.18
 description: Item bank
 commands:
    createbank:
       usage: /CreateBank
       description: Creates a bank when looking at a sign
-      aliases: [cb]
+      aliases:
+      - cb
    openbank:
       usage: /openbank
       description: Opens bank for player
-      aliases: [ob]
+      aliases:
+      - ob
+   reloadconfig:
+      usage: /reloadconfig
+      description: reloads config file
+      aliases: rc
    help:
       usage: /Help
       description: Shows a list of commands
 permissions:
-  ItemBank.Createbank:
-    parent node: ItemBank
-    default: false
-  ItemBank.OpenBank:
-     parent node: ItemBank
-     default: false
-  ItemBank.Help:
-     parent node: ItemBank
-     default: true
+   ItemBank.Createbank:
+      parent node: ItemBank
+      default: false
+   ItemBank.OpenBank:
+      parent node: ItemBank
+      default: false
+   ItemBank.Help:
+      parent node: ItemBank
+      default: true

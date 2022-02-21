@@ -1,14 +1,14 @@
 package me.ItemBank.main;
 
 import java.util.ArrayList;
+
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-
-import net.md_5.bungee.api.ChatColor;
 
 public class CommandHandler {
 	ItemBank plugin;
@@ -18,8 +18,8 @@ public class CommandHandler {
 	}
 
 	public boolean command(CommandSender sender, Command command, String label, String[] args) {
-
-		switch (command.getLabel().toLowerCase()) {
+		
+		switch (command.getName().toLowerCase()) {
 		case "createbank":
 			createBank(sender, args);
 			break;
@@ -32,6 +32,10 @@ public class CommandHandler {
 			} else {
 				sender.sendMessage(plugin.helpMessage);
 			}
+			break;
+		case "reloadconfig":
+			plugin.reloadConfig();
+			sender.sendMessage(ChatColor.GREEN + "Item Bank Config Reloaded");
 			break;
 		default:
 			sender.sendMessage(ChatColor.RED + "Invalid arguements");
@@ -49,6 +53,11 @@ public class CommandHandler {
 
 		if (!sender.hasPermission("itembank.openbank") && !sender.isOp()) {
 			noPermission(sender);
+			return;
+		}
+		
+		if(!plugin.getConfig().getBoolean("allow-open-bank-command")) {
+			sender.sendMessage(ChatColor.RED + "That command is disabled");
 			return;
 		}
 
