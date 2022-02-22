@@ -1478,6 +1478,7 @@ public class Bank implements Listener {
 		case TIPPED_ARROW:
 		case PLAYER_HEAD:
 		case FILLED_MAP:
+		case TROPICAL_FISH_BUCKET:
 			return false;
 		default:
 			break;
