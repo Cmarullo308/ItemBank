@@ -1,5 +1,3 @@
-Remove bucket of tropical fish from being able to be deposited
-
 Anvil search?
 itemButtons dont need to be declared at the top?
 permissions

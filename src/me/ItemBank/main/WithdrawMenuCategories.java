@@ -93,6 +93,8 @@ public class WithdrawMenuCategories {
 		addCategory(Material.RED_BED, "Beds");
 		addCategory(Material.GLASS, "Glass");
 		addCategory(Material.COPPER_BLOCK, "Copper");
+		addCategory(Material.HEAVY_WEIGHTED_PRESSURE_PLATE, "Pressure Plates");
+		addCategory(Material.BUCKET, "Buckets");
 
 		sortCategories(0, categories.size() - 1);
 	}

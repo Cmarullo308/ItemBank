@@ -70,10 +70,10 @@ public class ListOfItemsMenu {
 			if (listSlotNum < session.items.size() && session.items.get(listSlotNum) != null) {
 				ItemStack item = new ItemStack(session.items.get(listSlotNum));
 				ItemMeta meta = item.getItemMeta();
-				meta.setDisplayName(capitalizeWord(item.getType().name().replace("_", " ").toLowerCase()) + " ("
-						+ decimalFormat.format(session.amounts.get(listSlotNum)) + ")");
+				meta.setDisplayName(capitalizeWord(plugin.bank.getIngameItemName(item.getType().name()).replace("_", " ").toLowerCase()) + " ("
+						+ decimalFormat.format(session.amounts.get(listSlotNum)) + ")");				
 				item.setItemMeta(meta);
-
+				
 				menuButtons[guiSlot] = item;
 			} else {
 				menuButtons[guiSlot] = null;
@@ -86,7 +86,6 @@ public class ListOfItemsMenu {
 
 		if (page == 1) {
 			menuButtons[47] = backgroundIcon.clone();
-
 			meta = nextPageButtonIcon.getItemMeta();
 			meta.setDisplayName(
 					ChatColor.GOLD + "Next Page (" + session.getPageNum() + " / " + session.getNumOfPages() + ")");

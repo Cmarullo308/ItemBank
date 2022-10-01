@@ -591,16 +591,8 @@ public class Bank implements Listener {
 			}
 			break;
 		case "signs":
-			switch (material) {
-			case OAK_SIGN:
-			case SPRUCE_SIGN:
-			case BIRCH_SIGN:
-			case JUNGLE_SIGN:
-			case ACACIA_SIGN:
-			case DARK_OAK_SIGN:
+			if (material.toString().endsWith("_SIGN")) {
 				return true;
-			default:
-				break;
 			}
 			break;
 		case "mined":
@@ -629,6 +621,8 @@ public class Bank implements Listener {
 			case NETHERITE_INGOT:
 			case NETHERITE_SCRAP:
 			case AMETHYST_SHARD:
+			case COPPER_INGOT:
+			case COPPER_BLOCK:
 				return true;
 			default:
 				break;
@@ -722,30 +716,13 @@ public class Bank implements Listener {
 			}
 			break;
 		case "buttons":
-			switch (material) {
-			case STONE_BUTTON:
-			case OAK_BUTTON:
-			case SPRUCE_BUTTON:
-			case BIRCH_BUTTON:
-			case JUNGLE_BUTTON:
-			case ACACIA_BUTTON:
-			case DARK_OAK_BUTTON:
+			if (material.toString().endsWith("BUTTON")) {
 				return true;
-			default:
-				break;
 			}
 			break;
 		case "boats":
-			switch (material) {
-			case OAK_BOAT:
-			case SPRUCE_BOAT:
-			case BIRCH_BOAT:
-			case JUNGLE_BOAT:
-			case ACACIA_BOAT:
-			case DARK_OAK_BOAT:
+			if (material.toString().endsWith("BOAT")) {
 				return true;
-			default:
-				break;
 			}
 			break;
 		case "banners":
@@ -757,8 +734,28 @@ public class Bank implements Listener {
 			if (material.toString().startsWith("MUSIC")) {
 				return true;
 			}
+
+			if (material == Material.DISC_FRAGMENT_5) {
+				return true;
+			}
 			break;
 		case "redstone":
+			if (material.toString().endsWith("_PRESSURE_PLATE")) {
+				return true;
+			}
+
+			if (material.toString().endsWith("_TRAPDOOR")) {
+				return true;
+			}
+
+			if (material.toString().endsWith("_DOOR")) {
+				return true;
+			}
+
+			if (material.toString().endsWith("_FENCE_GATE")) {
+				return true;
+			}
+
 			switch (material) {
 			case DISPENSER:
 			case NOTE_BLOCK:
@@ -766,27 +763,8 @@ public class Bank implements Listener {
 			case PISTON:
 			case TNT:
 			case LEVER:
-			case STONE_PRESSURE_PLATE:
-			case OAK_PRESSURE_PLATE:
-			case SPRUCE_PRESSURE_PLATE:
-			case BIRCH_PRESSURE_PLATE:
-			case JUNGLE_PRESSURE_PLATE:
-			case ACACIA_PRESSURE_PLATE:
-			case DARK_OAK_PRESSURE_PLATE:
 			case REDSTONE_TORCH:
 			case STONE_BUTTON:
-			case OAK_TRAPDOOR:
-			case SPRUCE_TRAPDOOR:
-			case BIRCH_TRAPDOOR:
-			case JUNGLE_TRAPDOOR:
-			case ACACIA_TRAPDOOR:
-			case DARK_OAK_TRAPDOOR:
-			case OAK_FENCE_GATE:
-			case SPRUCE_FENCE_GATE:
-			case BIRCH_FENCE_GATE:
-			case JUNGLE_FENCE_GATE:
-			case ACACIA_FENCE_GATE:
-			case DARK_OAK_FENCE:
 			case REDSTONE_LAMP:
 			case TRIPWIRE_HOOK:
 			case OAK_BUTTON:
@@ -802,15 +780,7 @@ public class Bank implements Listener {
 			case REDSTONE_BLOCK:
 			case HOPPER:
 			case DROPPER:
-			case IRON_TRAPDOOR:
 			case OBSERVER:
-			case IRON_DOOR:
-			case OAK_DOOR:
-			case SPRUCE_DOOR:
-			case BIRCH_DOOR:
-			case JUNGLE_DOOR:
-			case ACACIA_DOOR:
-			case DARK_OAK_DOOR:
 			case REPEATER:
 			case COMPARATOR:
 			case REDSTONE:
@@ -822,21 +792,15 @@ public class Bank implements Listener {
 			}
 			break;
 		case "plants and leaves":
+			if (material.toString().endsWith("_LEAVES")) {
+				return true;
+			}
+
+			if (material.toString().endsWith("_SAPLING")) {
+				return true;
+			}
+
 			switch (material) {
-			case OAK_SAPLING:
-			case SPRUCE_SAPLING:
-			case BIRCH_SAPLING:
-			case JUNGLE_SAPLING:
-			case ACACIA_SAPLING:
-			case DARK_OAK_SAPLING:
-			case OAK_LEAVES:
-			case SPRUCE_LEAVES:
-			case BIRCH_LEAVES:
-			case JUNGLE_LEAVES:
-			case ACACIA_LEAVES:
-			case DARK_OAK_LEAVES:
-			case AZALEA_LEAVES:
-			case FLOWERING_AZALEA_LEAVES:
 			case AZALEA:
 			case FLOWERING_AZALEA:
 			case COBWEB:
@@ -903,6 +867,7 @@ public class Bank implements Listener {
 			case MOSS_BLOCK:
 			case MOSS_CARPET:
 			case SPORE_BLOSSOM:
+			case MANGROVE_PROPAGULE:
 				return true;
 			default:
 				break;
@@ -984,6 +949,7 @@ public class Bank implements Listener {
 			case DEEPSLATE_TILES:
 			case CRACKED_DEEPSLATE_TILES:
 			case CHISELED_DEEPSLATE:
+			case REINFORCED_DEEPSLATE:
 				return true;
 			default:
 				break;
@@ -1000,24 +966,8 @@ public class Bank implements Listener {
 			}
 			break;
 		case "doors":
-			switch (material) {
-			case OAK_TRAPDOOR:
-			case SPRUCE_TRAPDOOR:
-			case BIRCH_TRAPDOOR:
-			case JUNGLE_TRAPDOOR:
-			case ACACIA_TRAPDOOR:
-			case DARK_OAK_TRAPDOOR:
-			case IRON_TRAPDOOR:
-			case IRON_DOOR:
-			case OAK_DOOR:
-			case SPRUCE_DOOR:
-			case BIRCH_DOOR:
-			case JUNGLE_DOOR:
-			case ACACIA_DOOR:
-			case DARK_OAK_DOOR:
+			if (material.toString().endsWith("DOOR")) {
 				return true;
-			default:
-				break;
 			}
 			break;
 		case "ores":
@@ -1093,29 +1043,11 @@ public class Bank implements Listener {
 			case NAME_TAG:
 			case WARPED_FUNGUS_ON_A_STICK:
 			case SPYGLASS:
+			case GOAT_HORN:
+			case RECOVERY_COMPASS:
 			default:
 				break;
 			}
-
-//			else if (material == Material.SHEARS) {
-//				return true;
-//			} else if (material == Material.FLINT_AND_STEEL) {
-//				return true;
-//			} else if (material == Material.COMPASS) {
-//				return true;
-//			} else if (material == Material.FISHING_ROD) {
-//				return true;
-//			} else if (material == Material.CLOCK) {
-//				return true;
-//			} else if (material == Material.COMPASS) {
-//				return true;
-//			} else if (material == Material.LEAD) {
-//				return true;
-//			} else if (material == Material.NAME_TAG) {
-//				return true;
-//			} else if (material == Material.WARPED_FUNGUS_ON_A_STICK) {
-//				return true;
-//			}
 			break;
 		case "food":
 			switch (material) {
@@ -1200,6 +1132,9 @@ public class Bank implements Listener {
 			case GLOW_LICHEN:
 			case LIGHT:
 			case GLOW_ITEM_FRAME:
+			case OCHRE_FROGLIGHT:
+			case VERDANT_FROGLIGHT:
+			case PEARLESCENT_FROGLIGHT:
 				return true;
 			default:
 				break;
@@ -1216,7 +1151,7 @@ public class Bank implements Listener {
 			}
 			break;
 		case "beds":
-			if (material.toString().endsWith("_bed")) {
+			if (material.toString().endsWith("_BED")) {
 				return true;
 			}
 			break;
@@ -1225,6 +1160,15 @@ public class Bank implements Listener {
 				return true;
 			}
 			break;
+		case "pressure plates":
+			if (material.toString().endsWith("PRESSURE_PLATE")) {
+				return true;
+			}
+			break;
+		case "buckets":
+			if(material.toString().endsWith("_BUCKET")) {
+				return true;
+			}
 		default:
 			return false;
 		}
@@ -1271,7 +1215,7 @@ public class Bank implements Listener {
 					session.items.add(material);
 					session.amounts.add(bankItemsData.bankItemData.get(material).accountAmounts.get(uuid));
 				} else {
-					if (material.name().startsWith(letter)) {
+					if (getIngameItemName(material.name()).startsWith(letter)) {
 						session.items.add(material);
 						session.amounts.add(bankItemsData.bankItemData.get(material).accountAmounts.get(uuid));
 					}
@@ -1287,6 +1231,27 @@ public class Bank implements Listener {
 		session.setPageNum(1);
 		bankMenus.listOfItemsMenu.openMenuFor(player, 1);
 		// ----
+	}
+
+	public String getIngameItemName(String name) {
+		switch (name) {
+		case "COOKED_BEEF":
+			return "Steak";
+		case "PORKCHOP":
+			return "Raw Porkchop";
+		case "COD":
+			return "Raw Cod";
+		case "SALMON":
+			return "Raw Salmon";
+		case "MUTTON":
+			return "Raw Mutton";
+		case "CHICKEN":
+			return "Raw Chicken";
+		case "RABBIT":
+			return "Raw Rabbit";
+		default:
+			return name;
+		}
 	}
 
 	private boolean accountHasItem(Material material, UUID accountId) {
@@ -1479,6 +1444,11 @@ public class Bank implements Listener {
 		case PLAYER_HEAD:
 		case FILLED_MAP:
 		case TROPICAL_FISH_BUCKET:
+		case PUFFERFISH_BUCKET:
+		case SALMON_BUCKET:
+		case COD_BUCKET:
+		case AXOLOTL_BUCKET:
+		case TADPOLE_BUCKET:
 			return false;
 		default:
 			break;
