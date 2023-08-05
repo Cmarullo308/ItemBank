@@ -12,8 +12,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.HangingSign;
 import org.bukkit.block.ShulkerBox;
 import org.bukkit.block.Sign;
+import org.bukkit.block.sign.Side;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -22,9 +24,11 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ArmorMeta;
 import org.bukkit.inventory.meta.BannerMeta;
 import org.bukkit.inventory.meta.BlockStateMeta;
 import org.bukkit.inventory.meta.Damageable;
+import org.bukkit.inventory.meta.trim.ArmorTrim;
 
 import me.ItemBank.main.BankMenus.BANKMENU;
 import me.ItemBank.main.Session.ACCOUNT;
@@ -71,6 +75,7 @@ public class Bank implements Listener {
 			if (isSign(e.getClickedBlock().getType())) {
 				Sign sign = (Sign) block.getState();
 				if (isBankSign(sign)) {
+					e.setCancelled(true);
 					openBank(player);
 				}
 			}
@@ -84,30 +89,19 @@ public class Bank implements Listener {
 	}
 
 	private boolean isBankSign(Sign sign) {
-		if (sign.getLine(0).equals(magicLine)) {
+		if (sign.getSide(Side.FRONT).getLine(0).equals(magicLine)) {
+			return true;
+		} else if (sign.getSide(Side.BACK).getLine(0).equals(magicLine)) {
 			return true;
 		}
 		return false;
 	}
 
 	private boolean isSign(Material type) {
-		switch (type) {
-		case OAK_WALL_SIGN:
-		case BIRCH_WALL_SIGN:
-		case JUNGLE_WALL_SIGN:
-		case DARK_OAK_WALL_SIGN:
-		case ACACIA_WALL_SIGN:
-		case SPRUCE_WALL_SIGN:
-		case OAK_SIGN:
-		case BIRCH_SIGN:
-		case JUNGLE_SIGN:
-		case DARK_OAK_SIGN:
-		case ACACIA_SIGN:
-		case SPRUCE_SIGN:
+		if (type.toString().endsWith("_SIGN")) {
 			return true;
-		default:
-			return false;
 		}
+		return false;
 	}
 
 	@EventHandler
@@ -219,6 +213,11 @@ public class Bank implements Listener {
 		} else if (slotClicked == 49) {
 			player.closeInventory();
 		} else {
+			// If clicked on a blank spot
+			if (eventContents[slotClicked].getItemMeta().getDisplayName().equals(" ")) {
+				return;
+			}
+
 			if (eventContents[slotClicked] != null) {
 				session.setCategory(eventContents[slotClicked].getItemMeta().getDisplayName());
 				openListOfItemsMenuFromCategory(player, session.getCategory());
@@ -524,6 +523,11 @@ public class Bank implements Listener {
 				return true;
 			}
 			break;
+		case "carpets":
+			if (material.toString().endsWith("_CARPET")) {
+				return true;
+			}
+			break;
 		case "wood":
 			if (material.toString().endsWith("WOOD")) {
 				return true;
@@ -535,6 +539,15 @@ public class Bank implements Listener {
 				return true;
 			} else if (material.toString().endsWith("STEM") && !material.equals(Material.MUSHROOM_STEM)) {
 				return true;
+			}
+
+			switch (material) {
+			case BAMBOO_MOSAIC:
+			case BAMBOO_BLOCK:
+			case STRIPPED_BAMBOO_BLOCK:
+				return true;
+			default:
+				break;
 			}
 
 			break;
@@ -723,6 +736,8 @@ public class Bank implements Listener {
 		case "boats":
 			if (material.toString().endsWith("BOAT")) {
 				return true;
+			} else if (material.toString().endsWith("_RAFT")) {
+				return true;
 			}
 			break;
 		case "banners":
@@ -786,6 +801,8 @@ public class Bank implements Listener {
 			case REDSTONE:
 			case LECTERN:
 			case SCULK_SENSOR:
+			case CALIBRATED_SCULK_SENSOR:
+			case CHISELED_BOOKSHELF:
 				return true;
 			default:
 				break;
@@ -868,6 +885,12 @@ public class Bank implements Listener {
 			case MOSS_CARPET:
 			case SPORE_BLOSSOM:
 			case MANGROVE_PROPAGULE:
+			case FLOWER_POT:
+			case PINK_PETALS:
+			case PITCHER_PLANT:
+			case TORCHFLOWER:
+			case PITCHER_POD:
+			case TORCHFLOWER_SEEDS:
 				return true;
 			default:
 				break;
@@ -950,6 +973,15 @@ public class Bank implements Listener {
 			case CRACKED_DEEPSLATE_TILES:
 			case CHISELED_DEEPSLATE:
 			case REINFORCED_DEEPSLATE:
+			case SUSPICIOUS_GRAVEL:
+			case COBBLED_DEEPSLATE_STAIRS:
+			case COBBLED_DEEPSLATE_SLAB:
+			case POLISHED_DEEPSLATE_STAIRS:
+			case POLISHED_DEEPSLATE_SLAB:
+			case DEEPSLATE_BRICK_STAIRS:
+			case DEEPSLATE_BRICK_SLAB:
+			case DEEPSLATE_TILE_STAIRS:
+			case DEEPSLATE_TILE_SLAB:
 				return true;
 			default:
 				break;
@@ -1045,6 +1077,8 @@ public class Bank implements Listener {
 			case SPYGLASS:
 			case GOAT_HORN:
 			case RECOVERY_COMPASS:
+			case BRUSH:
+				return true;
 			default:
 				break;
 			}
@@ -1166,9 +1200,22 @@ public class Bank implements Listener {
 			}
 			break;
 		case "buckets":
-			if(material.toString().endsWith("_BUCKET")) {
+			if (material.toString().endsWith("BUCKET")) {
 				return true;
 			}
+			break;
+		case "pottery sherds":
+			if (material.toString().endsWith("_SHERD")) {
+				return true;
+			}
+			break;
+		case "smithing templates":
+			if (material.toString().endsWith("SMITHING_TEMPLATE")) {
+				return true;
+			} else if (material == Material.SMITHING_TABLE) {
+				return true;
+			}
+			break;
 		default:
 			return false;
 		}
@@ -1435,6 +1482,13 @@ public class Bank implements Listener {
 			return false;
 		}
 
+		if (itemStack.getItemMeta() instanceof ArmorMeta) {
+			ArmorMeta armorMeta = (ArmorMeta) itemStack.getItemMeta();
+			if (armorMeta.getTrim() != null) {
+				return false;
+			}
+		}
+
 		switch (itemStack.getType()) {
 		case POTION:
 		case SPLASH_POTION:
@@ -1567,16 +1621,46 @@ public class Bank implements Listener {
 		}
 	}
 
-	public void createBank(Player player) {
+	/**
+	 * Creates a bank
+	 * 
+	 * @param player
+	 * @param side
+	 * @return
+	 */
+	public void createBank(Player player, int sideNum) {
+		/**
+		 * side = 0 = front, side = 1 = back, side = 2 = both
+		 */
+
 		Block block = player.getTargetBlockExact(5);
 
-		if (isSign(block.getType())) {
-			Sign sign = (Sign) block.getState();
-			sign.setLine(0, magicLine);
-			sign.setLine(1, ChatColor.BLUE + "~Item Bank~");
-			sign.setLine(2, ChatColor.BLACK + "Right click to use");
-			sign.setLine(3, magicLine);
-			sign.update();
+		if (!isSign(block.getType())) {
+			return;
 		}
+
+		Sign sign = (Sign) block.getState();
+
+		if (sideNum == 0 || sideNum == 1) {
+			setSignSideText(sign, sideNum == 0 ? Side.FRONT : Side.BACK);
+		} else {
+			setSignSideText(sign, Side.FRONT);
+			setSignSideText(sign, Side.BACK);
+		}
+
+		return;
+	}
+
+	private void setSignSideText(Sign sign, Side signSide) {
+		sign.getSide(signSide).setLine(0, magicLine);
+		if (sign instanceof HangingSign) {
+			sign.getSide(signSide).setLine(1, ChatColor.BLUE + "~Bank~");
+			sign.getSide(signSide).setLine(2, ChatColor.BLACK + "Right click");
+		} else {
+			sign.getSide(signSide).setLine(1, ChatColor.BLUE + "~Item Bank~");
+			sign.getSide(signSide).setLine(2, ChatColor.BLACK + "Right click to use");
+		}
+		sign.getSide(signSide).setLine(3, magicLine);
+		sign.update();
 	}
 }

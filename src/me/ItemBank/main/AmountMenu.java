@@ -95,8 +95,8 @@ public class AmountMenu {
 
 	public void openMenuFor(Player player, Material material) {
 		ConcurrentHashMap<Material, BankItem> bankItemData = plugin.bank.bankItemsData.bankItemData;
-		
-        DecimalFormat decimalFormat = plugin.decimalFormat;
+
+		DecimalFormat decimalFormat = plugin.decimalFormat;
 
 		inventory = Bukkit.createInventory(player, 27, menuName);
 		menuButtons[4] = new ItemStack(material);
@@ -126,50 +126,57 @@ public class AmountMenu {
 		// Minus 1
 		menuButtons[12] = new ItemStack(Material.GLOWSTONE_DUST);
 		meta = menuButtons[12].getItemMeta();
-		meta.setDisplayName(ChatColor.RED + "-1 " + ChatColor.WHITE + "(" + session.getAmountSelected() + " / "
-				+ decimalFormat.format(session.getMaxAmount()) + ")");
+		meta.setDisplayName(
+				ChatColor.RED + "-1 " + ChatColor.WHITE + "(" + decimalFormat.format(session.getAmountSelected())
+						+ " / " + decimalFormat.format(session.getMaxAmount()) + ")");
 		menuButtons[12].setItemMeta(meta);
 
 		// Minus 10
 		menuButtons[11] = new ItemStack(Material.GLOWSTONE_DUST);
 		meta = menuButtons[11].getItemMeta();
-		meta.setDisplayName(ChatColor.RED + "-10 " + ChatColor.WHITE + "(" + session.getAmountSelected() + " / "
-				+ decimalFormat.format(session.getMaxAmount()) + ")");
+		meta.setDisplayName(
+				ChatColor.RED + "-10 " + ChatColor.WHITE + "(" + decimalFormat.format(session.getAmountSelected())
+						+ " / " + decimalFormat.format(session.getMaxAmount()) + ")");
 		menuButtons[11].setItemMeta(meta);
 
 		// Minus 64
 		menuButtons[10] = new ItemStack(Material.GLOWSTONE_DUST);
 		meta = menuButtons[10].getItemMeta();
-		meta.setDisplayName(ChatColor.RED + "-64 " + ChatColor.WHITE + "(" + session.getAmountSelected() + " / "
-				+ decimalFormat.format(session.getMaxAmount()) + ")");
+		meta.setDisplayName(
+				ChatColor.RED + "-64 " + ChatColor.WHITE + "(" + decimalFormat.format(session.getAmountSelected())
+						+ " / " + decimalFormat.format(session.getMaxAmount()) + ")");
 		menuButtons[10].setItemMeta(meta);
 
 		// Reset to 0
 		menuButtons[13] = new ItemStack(Material.WHITE_STAINED_GLASS_PANE);
 		meta = menuButtons[13].getItemMeta();
-		meta.setDisplayName(ChatColor.YELLOW + "Reset to 0 " + ChatColor.WHITE + "(" + session.getAmountSelected()
-				+ " / " + decimalFormat.format(session.getMaxAmount()) + ")");
+		meta.setDisplayName(ChatColor.YELLOW + "Reset to 0 " + ChatColor.WHITE + "("
+				+ decimalFormat.format(session.getAmountSelected()) + " / "
+				+ decimalFormat.format(session.getMaxAmount()) + ")");
 		menuButtons[13].setItemMeta(meta);
 
 		// Add 1
 		menuButtons[14] = new ItemStack(Material.REDSTONE);
 		meta = menuButtons[14].getItemMeta();
-		meta.setDisplayName(ChatColor.GREEN + "+1 " + ChatColor.WHITE + "(" + session.getAmountSelected() + " / "
-				+ decimalFormat.format(session.getMaxAmount()) + ")");
+		meta.setDisplayName(
+				ChatColor.GREEN + "+1 " + ChatColor.WHITE + "(" + decimalFormat.format(session.getAmountSelected())
+						+ " / " + decimalFormat.format(session.getMaxAmount()) + ")");
 		menuButtons[14].setItemMeta(meta);
 
 		// Add 10
 		menuButtons[15] = new ItemStack(Material.REDSTONE);
 		meta = menuButtons[15].getItemMeta();
-		meta.setDisplayName(ChatColor.GREEN + "+10 " + ChatColor.WHITE + "(" + session.getAmountSelected() + " / "
-				+ decimalFormat.format(session.getMaxAmount()) + ")");
+		meta.setDisplayName(
+				ChatColor.GREEN + "+10 " + ChatColor.WHITE + "(" + decimalFormat.format(session.getAmountSelected())
+						+ " / " + decimalFormat.format(session.getMaxAmount()) + ")");
 		menuButtons[15].setItemMeta(meta);
 
 		// Add 64
 		menuButtons[16] = new ItemStack(Material.REDSTONE);
 		meta = menuButtons[16].getItemMeta();
-		meta.setDisplayName(ChatColor.GREEN + "+64 " + ChatColor.WHITE + "(" + session.getAmountSelected() + " / "
-				+ decimalFormat.format(session.getMaxAmount()) + ")");
+		meta.setDisplayName(
+				ChatColor.GREEN + "+64 " + ChatColor.WHITE + "(" + decimalFormat.format(session.getAmountSelected())
+						+ " / " + decimalFormat.format(session.getMaxAmount()) + ")");
 		menuButtons[16].setItemMeta(meta);
 
 		menuButtons[26] = new ItemStack(Material.LIME_STAINED_GLASS_PANE);

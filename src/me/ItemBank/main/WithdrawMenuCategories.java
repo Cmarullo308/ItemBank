@@ -95,6 +95,9 @@ public class WithdrawMenuCategories {
 		addCategory(Material.COPPER_BLOCK, "Copper");
 		addCategory(Material.HEAVY_WEIGHTED_PRESSURE_PLATE, "Pressure Plates");
 		addCategory(Material.BUCKET, "Buckets");
+		addCategory(Material.ANGLER_POTTERY_SHERD, "Pottery Sherds");
+		addCategory(Material.SMITHING_TABLE, "Smithing Templates");
+		addCategory(Material.RED_CARPET, "Carpets");
 
 		sortCategories(0, categories.size() - 1);
 	}
@@ -144,7 +147,7 @@ public class WithdrawMenuCategories {
 		Session session = plugin.bank.sessions.get(player);
 		session.setPageNum(pageNum);
 
-		int categoryPageAmount = categories.size() / 45;
+		int categoryPageAmount = categories.size() / 36;
 		if (categories.size() % 45 != 0) {
 			categoryPageAmount++;
 		}

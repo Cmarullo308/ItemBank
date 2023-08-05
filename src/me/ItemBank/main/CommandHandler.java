@@ -18,7 +18,7 @@ public class CommandHandler {
 	}
 
 	public boolean command(CommandSender sender, Command command, String label, String[] args) {
-		
+
 		switch (command.getName().toLowerCase()) {
 		case "createbank":
 			createBank(sender, args);
@@ -55,8 +55,8 @@ public class CommandHandler {
 			noPermission(sender);
 			return;
 		}
-		
-		if(!plugin.getConfig().getBoolean("allow-open-bank-command")) {
+
+		if (!plugin.getConfig().getBoolean("allow-open-bank-command")) {
 			sender.sendMessage(ChatColor.RED + "That command is disabled");
 			return;
 		}
@@ -79,7 +79,24 @@ public class CommandHandler {
 			return;
 		}
 
-		plugin.bank.createBank((Player) sender);
+		if (args.length == 0) {
+			plugin.bank.createBank((Player) sender, 0);
+		} else if (args.length == 1) {
+			switch (args[0].toLowerCase()) {
+			case "front":
+				plugin.bank.createBank((Player) sender, 0);
+				break;
+			case "back":
+				plugin.bank.createBank((Player) sender, 1);
+				break;
+			case "both":
+				plugin.bank.createBank((Player) sender, 2);
+				break;
+			default:
+				sender.sendMessage(ChatColor.RED + "Invalid arguement");
+				break;
+			}
+		}
 	}
 
 	private String mustBeAPlayerMessage() {
@@ -122,7 +139,7 @@ public class CommandHandler {
 			} else if (args[1].equalsIgnoreCase("hm")) {
 				player.sendMessage(plugin.bank.bankItemsData.bankItemData
 						.get(player.getInventory().getItemInMainHand().getType()).accountAmounts
-								.get(player.getUniqueId()).toString());
+						.get(player.getUniqueId()).toString());
 			}
 		}
 
