@@ -1,4 +1,6 @@
-First number commas
+Correct stack amount when withdraw
+Cocoa beans in seeds and plant shit categorgy
+Fences walls gate same category
 
 Anvil search?
 itemButtons dont need to be declared at the top?

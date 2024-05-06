@@ -821,7 +821,7 @@ public class Bank implements Listener {
 			case AZALEA:
 			case FLOWERING_AZALEA:
 			case COBWEB:
-			case GRASS:
+			case SHORT_GRASS:
 			case FERN:
 			case DEAD_BUSH:
 			case SEAGRASS:
