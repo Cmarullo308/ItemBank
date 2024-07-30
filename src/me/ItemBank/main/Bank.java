@@ -28,8 +28,6 @@ import org.bukkit.inventory.meta.ArmorMeta;
 import org.bukkit.inventory.meta.BannerMeta;
 import org.bukkit.inventory.meta.BlockStateMeta;
 import org.bukkit.inventory.meta.Damageable;
-import org.bukkit.inventory.meta.trim.ArmorTrim;
-
 import me.ItemBank.main.BankMenus.BANKMENU;
 import me.ItemBank.main.Session.ACCOUNT;
 
@@ -567,6 +565,7 @@ public class Bank implements Listener {
 			case GOLDEN_SWORD:
 			case TRIDENT:
 			case CROSSBOW:
+			case WIND_CHARGE:
 				return true;
 			default:
 				break;
@@ -598,8 +597,11 @@ public class Bank implements Listener {
 				break;
 			}
 			break;
-		case "fences":
+		case "fences and walls":
 			if (material.toString().contains("FENCE")) {
+				return true;
+			}
+			if (material.toString().endsWith("WALL")) {
 				return true;
 			}
 			break;
@@ -817,6 +819,10 @@ public class Bank implements Listener {
 				return true;
 			}
 
+			if (material.toString().contains("_CORAL")) {
+				return true;
+			}
+
 			switch (material) {
 			case AZALEA:
 			case FLOWERING_AZALEA:
@@ -851,26 +857,6 @@ public class Bank implements Listener {
 			case PEONY:
 			case TALL_GRASS:
 			case LARGE_FERN:
-			case TUBE_CORAL:
-			case BRAIN_CORAL:
-			case BUBBLE_CORAL:
-			case FIRE_CORAL:
-			case HORN_CORAL:
-			case DEAD_BRAIN_CORAL:
-			case DEAD_BUBBLE_CORAL:
-			case DEAD_FIRE_CORAL:
-			case DEAD_HORN_CORAL:
-			case DEAD_TUBE_CORAL:
-			case TUBE_CORAL_FAN:
-			case BRAIN_CORAL_FAN:
-			case BUBBLE_CORAL_FAN:
-			case FIRE_CORAL_FAN:
-			case HORN_CORAL_FAN:
-			case DEAD_TUBE_CORAL_FAN:
-			case DEAD_BRAIN_CORAL_FAN:
-			case DEAD_BUBBLE_CORAL_FAN:
-			case DEAD_FIRE_CORAL_FAN:
-			case DEAD_HORN_CORAL_FAN:
 			case CRIMSON_ROOTS:
 			case POTTED_CRIMSON_ROOTS:
 			case POTTED_WARPED_ROOTS:
@@ -891,6 +877,7 @@ public class Bank implements Listener {
 			case TORCHFLOWER:
 			case PITCHER_POD:
 			case TORCHFLOWER_SEEDS:
+			case COCOA_BEANS:
 				return true;
 			default:
 				break;
@@ -982,6 +969,21 @@ public class Bank implements Listener {
 			case DEEPSLATE_BRICK_SLAB:
 			case DEEPSLATE_TILE_STAIRS:
 			case DEEPSLATE_TILE_SLAB:
+				// Tuff
+			case TUFF:
+			case TUFF_STAIRS:
+			case TUFF_SLAB:
+			case TUFF_WALL:
+			case CHISELED_TUFF:
+			case POLISHED_TUFF:
+			case POLISHED_TUFF_STAIRS:
+			case POLISHED_TUFF_SLAB:
+			case POLISHED_TUFF_WALL:
+			case TUFF_BRICKS:
+			case TUFF_BRICK_STAIRS:
+			case TUFF_BRICK_SLAB:
+			case TUFF_BRICK_WALL:
+			case CHISELED_TUFF_BRICKS:
 				return true;
 			default:
 				break;
@@ -1045,11 +1047,6 @@ public class Bank implements Listener {
 			if (material.toString().endsWith("TERRACOTTA")) {
 				return true;
 			} else if (material == Material.CLAY || material == Material.CLAY_BALL) {
-				return true;
-			}
-			break;
-		case "walls":
-			if (material.toString().endsWith("WALL")) {
 				return true;
 			}
 			break;
@@ -1130,6 +1127,10 @@ public class Bank implements Listener {
 			break;
 		case "light":
 			if (material.toString().endsWith("CANDLE")) {
+				return true;
+			}
+
+			if (material.toString().endsWith("COPPER_BULB")) {
 				return true;
 			}
 			switch (material) {

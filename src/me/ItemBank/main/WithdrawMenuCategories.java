@@ -75,7 +75,6 @@ public class WithdrawMenuCategories {
 		addCategory(Material.OAK_DOOR, "Doors");
 		addCategory(Material.IRON_ORE, "Ores");
 		addCategory(Material.CLAY_BALL, "Clay");
-		addCategory(Material.STONE_BRICK_WALL, "Walls");
 		addCategory(Material.PURPLE_DYE, "Dyes");
 		addCategory(Material.GRAY_CONCRETE, "Concrete");
 		addCategory(Material.WHEAT_SEEDS, "Seeds");
@@ -84,7 +83,7 @@ public class WithdrawMenuCategories {
 		addCategory(Material.MUSIC_DISC_WAIT, "Music Discs");
 		addCategory(Material.OAK_BOAT, "Boats");
 		addCategory(Material.SPIDER_EYE, "Potion Ingredients");
-		addCategory(Material.OAK_FENCE, "Fences");
+		addCategory(Material.OAK_FENCE, "Fences and walls");
 		addCategory(Material.OAK_SIGN, "Signs");
 		addCategory(Material.DIAMOND, "Mined");
 		addCategory(Material.TORCH, "Light");
