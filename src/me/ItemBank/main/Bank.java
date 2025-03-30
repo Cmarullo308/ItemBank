@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -27,6 +28,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ArmorMeta;
 import org.bukkit.inventory.meta.BannerMeta;
 import org.bukkit.inventory.meta.BlockStateMeta;
+import org.bukkit.inventory.meta.BundleMeta;
 import org.bukkit.inventory.meta.Damageable;
 import me.ItemBank.main.BankMenus.BANKMENU;
 import me.ItemBank.main.Session.ACCOUNT;
@@ -543,6 +545,7 @@ public class Bank implements Listener {
 			case BAMBOO_MOSAIC:
 			case BAMBOO_BLOCK:
 			case STRIPPED_BAMBOO_BLOCK:
+			case CREAKING_HEART:
 				return true;
 			default:
 				break;
@@ -638,6 +641,9 @@ public class Bank implements Listener {
 			case AMETHYST_SHARD:
 			case COPPER_INGOT:
 			case COPPER_BLOCK:
+			case RESIN_CLUMP:
+			case RESIN_BLOCK:
+			case RESIN_BRICK:
 				return true;
 			default:
 				break;
@@ -743,7 +749,7 @@ public class Bank implements Listener {
 			}
 			break;
 		case "banners":
-			if (material.toString().endsWith("BANNER")) {
+			if (material.toString().endsWith("BANNER") || material.toString().endsWith("BANNER_PATTERN")) {
 				return true;
 			}
 			break;
@@ -878,6 +884,18 @@ public class Bank implements Listener {
 			case PITCHER_POD:
 			case TORCHFLOWER_SEEDS:
 			case COCOA_BEANS:
+			case OPEN_EYEBLOSSOM:
+			case CLOSED_EYEBLOSSOM:
+			case PALE_HANGING_MOSS:
+			case PALE_MOSS_BLOCK:
+			case PALE_MOSS_CARPET:
+			case BUSH:
+			case CACTUS_FLOWER:
+			case FIREFLY_BUSH:
+			case LEAF_LITTER:
+			case WILDFLOWERS:
+			case SHORT_DRY_GRASS:
+			case TALL_DRY_GRASS:
 				return true;
 			default:
 				break;
@@ -984,6 +1002,9 @@ public class Bank implements Listener {
 			case TUFF_BRICK_SLAB:
 			case TUFF_BRICK_WALL:
 			case CHISELED_TUFF_BRICKS:
+			//Resin
+			case RESIN_BRICKS:
+			case CHISELED_RESIN_BRICKS:
 				return true;
 			default:
 				break;
@@ -1514,14 +1535,17 @@ public class Bank implements Listener {
 			return false;
 		}
 
+		// Is a non-empty shulker box
 		if (isShulkerBoxWithItems(itemStack)) {
 			return false;
 		}
 
+		// Item has enchantments
 		if (itemStack.getEnchantments().isEmpty() == false) {
 			return false;
 		}
 
+		// Is a banner with a pattern
 		if (isBannerWithPattern(itemStack)) {
 			return false;
 		}
@@ -1531,8 +1555,23 @@ public class Bank implements Listener {
 			return false;
 		}
 
+		if (isBundleWithItems(itemStack)) {
+			return false;
+		}
+
 		// Item is valid
 		return true;
+	}
+
+	private boolean isBundleWithItems(ItemStack itemStack) {
+		if (itemStack.getType().toString().endsWith("BUNDLE")) {
+			BundleMeta bundleMeta = (BundleMeta) itemStack.getItemMeta();
+
+			List<ItemStack> items = bundleMeta.getItems();
+			return !items.isEmpty();
+		}
+
+		return false;
 	}
 
 	private boolean isBannerWithPattern(ItemStack itemStack) {
