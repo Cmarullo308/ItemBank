@@ -199,7 +199,9 @@ public class Bank implements Listener {
 		Session session = sessions.get(player);
 		ItemStack[] eventContents = event.getInventory().getContents();
 
-		if (slotClicked == 4) {
+		if (slotClicked < 0) {
+			return;
+		} else if (slotClicked == 4) {
 			session.setPageNum(1); // delete later?
 			bankMenus.withdrawMenu.openMenuFor(player);
 			session.setCameFromCategories(false);
@@ -213,6 +215,7 @@ public class Bank implements Listener {
 		} else if (slotClicked == 49) {
 			player.closeInventory();
 		} else {
+
 			// If clicked on a blank spot
 			if (eventContents[slotClicked].getItemMeta().getDisplayName().equals(" ")) {
 				return;
@@ -1002,7 +1005,7 @@ public class Bank implements Listener {
 			case TUFF_BRICK_SLAB:
 			case TUFF_BRICK_WALL:
 			case CHISELED_TUFF_BRICKS:
-			//Resin
+				// Resin
 			case RESIN_BRICKS:
 			case CHISELED_RESIN_BRICKS:
 				return true;
