@@ -561,14 +561,12 @@ public class Bank implements Listener {
 			}
 			break;
 		case "weapons":
+			if(material.toString().endsWith("_SWORD")) {
+				return true;
+			}
 			switch (material) {
 			case BOW:
 			case ARROW:
-			case IRON_SWORD:
-			case WOODEN_SWORD:
-			case STONE_SWORD:
-			case DIAMOND_SWORD:
-			case GOLDEN_SWORD:
 			case TRIDENT:
 			case CROSSBOW:
 			case WIND_CHARGE:
@@ -647,46 +645,30 @@ public class Bank implements Listener {
 			case RESIN_CLUMP:
 			case RESIN_BLOCK:
 			case RESIN_BRICK:
+			case COPPER_NUGGET:
 				return true;
 			default:
 				break;
 			}
 			break;
 		case "armor":
-			switch (material) {
-			case LEATHER_HELMET:
-			case CHAINMAIL_HELMET:
-			case IRON_HELMET:
-			case DIAMOND_HELMET:
-			case GOLDEN_HELMET:
-			case LEATHER_CHESTPLATE:
-			case CHAINMAIL_CHESTPLATE:
-			case IRON_CHESTPLATE:
-			case DIAMOND_CHESTPLATE:
-			case GOLDEN_CHESTPLATE:
-			case LEATHER_LEGGINGS:
-			case CHAINMAIL_LEGGINGS:
-			case IRON_LEGGINGS:
-			case DIAMOND_LEGGINGS:
-			case GOLDEN_LEGGINGS:
-			case LEATHER_BOOTS:
-			case CHAINMAIL_BOOTS:
-			case IRON_BOOTS:
-			case DIAMOND_BOOTS:
-			case GOLDEN_BOOTS:
-			case TURTLE_HELMET:
-			case SHIELD:
-			case IRON_HORSE_ARMOR:
-			case GOLDEN_HORSE_ARMOR:
-			case DIAMOND_HORSE_ARMOR:
-			case LEATHER_HORSE_ARMOR:
-			case NETHERITE_HELMET:
-			case NETHERITE_CHESTPLATE:
-			case NETHERITE_LEGGINGS:
-			case NETHERITE_BOOTS:
+			if (material.toString().endsWith("_CHESTPLATE")) {
 				return true;
-			default:
-				break;
+			}
+			if (material.toString().endsWith("_HELMET")) {
+				return true;
+			}
+			if (material.toString().endsWith("_LEGGINGS")) {
+				return true;
+			}
+			if (material.toString().endsWith("_BOOTS")) {
+				return true;
+			}
+			if (material.toString().endsWith("_HORSE_ARMOR")) {
+				return true;
+			}
+			if (material == Material.SHIELD) {
+				return true;
 			}
 			break;
 		case "transportation":
@@ -1017,6 +999,9 @@ public class Bank implements Listener {
 			if (material.toString().contains("COPPER")) {
 				return true;
 			}
+			if(material.toString().endsWith("LIGHTNING_ROD")) {
+				return true;
+			}
 			break;
 		case "slabs":
 			if (material.toString().endsWith("SLAB")) {
@@ -1075,13 +1060,13 @@ public class Bank implements Listener {
 			}
 			break;
 		case "tools":
-			if (material.toString().endsWith("SHOVEL")) {
+			if (material.toString().endsWith("_SHOVEL")) {
 				return true;
-			} else if (material.toString().endsWith("PICKAXE")) {
+			} else if (material.toString().endsWith("_PICKAXE")) {
 				return true;
-			} else if (material.toString().endsWith("AXE")) {
+			} else if (material.toString().endsWith("_AXE")) {
 				return true;
-			} else if (material.toString().endsWith("HOE")) {
+			} else if (material.toString().endsWith("_HOE")) {
 				return true;
 			} else if (material.toString().contains("COMPASS")) {
 				return true;
@@ -1153,8 +1138,10 @@ public class Bank implements Listener {
 			if (material.toString().endsWith("CANDLE")) {
 				return true;
 			}
-
 			if (material.toString().endsWith("COPPER_BULB")) {
+				return true;
+			}
+			if (material.toString().endsWith("COPPER_LANTERN")) {
 				return true;
 			}
 			switch (material) {
@@ -1168,7 +1155,6 @@ public class Bank implements Listener {
 			case REDSTONE_LAMP:
 			case SEA_LANTERN:
 			case SEA_PICKLE:
-			case SHROOMLIGHT:
 			case CONDUIT:
 			case LANTERN:
 			case CAMPFIRE:
@@ -1194,6 +1180,8 @@ public class Bank implements Listener {
 			case OCHRE_FROGLIGHT:
 			case VERDANT_FROGLIGHT:
 			case PEARLESCENT_FROGLIGHT:
+			case SHROOMLIGHT:
+			case COPPER_TORCH:
 				return true;
 			default:
 				break;
