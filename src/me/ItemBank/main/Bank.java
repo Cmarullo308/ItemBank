@@ -563,6 +563,8 @@ public class Bank implements Listener {
 		case "weapons":
 			if(material.toString().endsWith("_SWORD")) {
 				return true;
+			} else if(material.toString().endsWith("_SPEAR")) {
+				return true;
 			}
 			switch (material) {
 			case BOW:
@@ -664,7 +666,7 @@ public class Bank implements Listener {
 			if (material.toString().endsWith("_BOOTS")) {
 				return true;
 			}
-			if (material.toString().endsWith("_HORSE_ARMOR")) {
+			if (material.toString().endsWith("_ARMOR")) {
 				return true;
 			}
 			if (material == Material.SHIELD) {
