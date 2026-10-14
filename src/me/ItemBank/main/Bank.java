@@ -561,9 +561,9 @@ public class Bank implements Listener {
 			}
 			break;
 		case "weapons":
-			if(material.toString().endsWith("_SWORD")) {
+			if (material.toString().endsWith("_SWORD")) {
 				return true;
-			} else if(material.toString().endsWith("_SPEAR")) {
+			} else if (material.toString().endsWith("_SPEAR")) {
 				return true;
 			}
 			switch (material) {
@@ -992,6 +992,35 @@ public class Bank implements Listener {
 				// Resin
 			case RESIN_BRICKS:
 			case CHISELED_RESIN_BRICKS:
+				//Cinnabar
+			case CINNABAR:
+			case CINNABAR_SLAB:
+			case CINNABAR_STAIRS:
+			case CINNABAR_WALL:
+			case POLISHED_CINNABAR:
+			case POLISHED_CINNABAR_SLAB:
+			case POLISHED_CINNABAR_STAIRS:
+			case POLISHED_CINNABAR_WALL:
+			case CINNABAR_BRICKS:
+			case CINNABAR_BRICK_SLAB:
+			case CINNABAR_BRICK_STAIRS:
+			case CINNABAR_BRICK_WALL:
+			case CHISELED_CINNABAR:
+				//Sulfer
+			case POTENT_SULFUR:
+			case SULFUR:
+			case SULFUR_SLAB:
+			case SULFUR_STAIRS:
+			case SULFUR_WALL:
+			case POLISHED_SULFUR:
+			case POLISHED_SULFUR_SLAB:
+			case POLISHED_SULFUR_STAIRS:
+			case POLISHED_SULFUR_WALL:
+			case SULFUR_BRICKS:
+			case SULFUR_BRICK_SLAB:
+			case SULFUR_BRICK_STAIRS:
+			case SULFUR_BRICK_WALL:
+			case CHISELED_SULFUR:
 				return true;
 			default:
 				break;
@@ -1001,7 +1030,7 @@ public class Bank implements Listener {
 			if (material.toString().contains("COPPER")) {
 				return true;
 			}
-			if(material.toString().endsWith("LIGHTNING_ROD")) {
+			if (material.toString().endsWith("LIGHTNING_ROD")) {
 				return true;
 			}
 			break;
