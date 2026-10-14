@@ -97,6 +97,9 @@ public class WithdrawMenuCategories {
 		addCategory(Material.ANGLER_POTTERY_SHERD, "Pottery Sherds");
 		addCategory(Material.SMITHING_TABLE, "Smithing Templates");
 		addCategory(Material.RED_CARPET, "Carpets");
+		addCategory(Material.OAK_SHELF, "Shelves");
+		addCategory(Material.BURIED_TREASURE_MAP, "Maps");
+		addCategory(Material.WHITE_CUSHION, "Cushions");
 
 		sortCategories(0, categories.size() - 1);
 	}

@@ -704,7 +704,7 @@ public class Bank implements Listener {
 			}
 			break;
 		case "concrete":
-			if (material.toString().endsWith("CONCRETE")) {
+			if (material.toString().contains("CONCRETE")) {
 				return true;
 			} else if (material.toString().endsWith("POWDER")) {
 				if (material != Material.GUNPOWDER && material != Material.BLAZE_POWDER) {
@@ -809,6 +809,10 @@ public class Bank implements Listener {
 			}
 
 			if (material.toString().endsWith("_SAPLING")) {
+				return true;
+			}
+
+			if (material.toString().endsWith("_SHRUB")) {
 				return true;
 			}
 
@@ -992,7 +996,7 @@ public class Bank implements Listener {
 				// Resin
 			case RESIN_BRICKS:
 			case CHISELED_RESIN_BRICKS:
-				//Cinnabar
+				// Cinnabar
 			case CINNABAR:
 			case CINNABAR_SLAB:
 			case CINNABAR_STAIRS:
@@ -1006,7 +1010,7 @@ public class Bank implements Listener {
 			case CINNABAR_BRICK_STAIRS:
 			case CINNABAR_BRICK_WALL:
 			case CHISELED_CINNABAR:
-				//Sulfer
+				// Sulfer
 			case POTENT_SULFUR:
 			case SULFUR:
 			case SULFUR_SLAB:
@@ -1260,12 +1264,45 @@ public class Bank implements Listener {
 				return true;
 			}
 			break;
+		case "shelves":
+			switch (material) {
+			case SHELF_MUSHROOM:
+			case BOOKSHELF:
+			case CHISELED_BOOKSHELF:
+				return true;
+			default:
+				break;
+			}
+
+			if (material.toString().endsWith("_SHELF")) {
+				return true;
+			}
+
+			break;
+		case "maps":
+			switch (material) {
+			case MAP:
+				return true;
+			default:
+				break;
+			}
+
+			if (material.toString().endsWith("_MAP")) {
+				return true;
+			}
+
+			break;
+		case "cushions":
+			if (material.toString().endsWith("_CUSHION")) {
+				return true;
+			}
+
+			break;
 		default:
 			return false;
 		}
 
 		return false;
-
 	}
 
 	private void openListOfItemsMenu(Player player, String letter) {
